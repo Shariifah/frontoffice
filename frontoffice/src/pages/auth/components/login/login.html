@@ -1,0 +1,18 @@
+<div class="auth-card">
+  <h2>Connexion</h2>
+  <p>Connectez-vous avec votre numéro de téléphone</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="p-field">
+      <label>Téléphone</label>
+      <input pInputText formControlName="phonenumber" />
+    </div>
+
+    <div class="p-field">
+      <label>Mot de passe</label>
+      <input pPassword formControlName="password" toggleMask />
+    </div>
+
+    <button pButton type="submit" label="Se connecter" [loading]="loading" [disabled]="form.invalid || loading"></button>
+  </form>
+</div>

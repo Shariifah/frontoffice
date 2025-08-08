@@ -1,0 +1,30 @@
+<div class="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold mb-2">Créer un compte</h2>
+  <p class="text-gray-600 mb-6">Entrez votre numéro pour recevoir un code par SMS</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+    <div>
+      <label for="phonenumber" class="block text-sm font-medium text-gray-700">Téléphone</label>
+      <input
+        pInputText
+        id="phonenumber"
+        type="tel"
+        formControlName="phonenumber"
+        placeholder="0700112233"
+        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
+      />
+      <p [@if]="form.controls['phonenumber'].invalid && form.controls['phonenumber'].touched" class="text-red-500 text-sm mt-1">
+        Numéro invalide
+      </p>
+    </div>
+
+    <button
+      pButton
+      type="submit"
+      label="Envoyer le code"
+      class="w-full"
+      [loading]="loading"
+      [disabled]="form.invalid || loading"
+    ></button>
+  </form>
+</div>
