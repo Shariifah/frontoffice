@@ -1,21 +1,34 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { AuthService } from '@/pages/auth/services/auth';
 import { Router } from '@angular/router';
+import {ButtonDirective} from 'primeng/button';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
+  imports: [
+    ReactiveFormsModule,
+    ButtonDirective
+  ]
 })
-export class LoginComponent {
+export class Login implements OnInit {
   loading = false;
+  form!: FormGroup;
+  // FormGroup défini mais initialisé dans ngOnInit Pour Shariifah en revue
 
-  form = this.fb.group({
-    phonenumber: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]],
-    password: ['', Validators.required],
-  });
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      phonenumber: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]],
+      password: ['', Validators.required],
+    });
+  }
 
   submit() {
     if (this.form.invalid) return;

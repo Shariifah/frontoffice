@@ -1,23 +1,21 @@
-import { Component } from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {ButtonDirective} from 'primeng/button';
+import { AuthService } from '@/pages/auth/services/auth';
+import { ButtonDirective } from 'primeng/button';
 
 @Component({
   selector: 'app-request-otp',
+  standalone: true,
   templateUrl: './request-otp.html',
   imports: [
     ReactiveFormsModule,
     ButtonDirective
   ]
 })
-export class RequestOtpComponent {
+export class RequestOtpComponent implements OnInit {
   loading = false;
-
-  form = this.fb.group({
-    phonenumber: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]],
-  });
+  form!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -25,7 +23,13 @@ export class RequestOtpComponent {
     private router: Router
   ) {}
 
-  submit() {
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      phonenumber: ['', [Validators.required, Validators.pattern(/^\d{9,15}$/)]],
+    });
+  }
+
+  submit(): void {
     if (this.form.invalid) return;
 
     this.loading = true;
@@ -34,7 +38,7 @@ export class RequestOtpComponent {
         localStorage.setItem('phonenumber', this.form.value.phonenumber!);
         this.router.navigate(['/auth/verify-otp']);
       },
-      error: (err: any) => {
+      error: (err) => {
         console.error(err);
       },
       complete: () => (this.loading = false),

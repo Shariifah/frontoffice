@@ -1,30 +1,47 @@
-import { Component } from '@angular/core';
-import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import { AuthService } from '../../services/auth';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '@/pages/auth/services/auth';
 import { Router } from '@angular/router';
-import {ButtonDirective} from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   templateUrl: './register.html',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
-    ButtonDirective
-  ]
+    ButtonModule,
+    InputTextModule,
+    PasswordModule
+  ],
 })
-export class RegisterComponent {
+export class Register implements OnInit {
   loading = false;
-  otpToken = localStorage.getItem('otpToken') || '';
-  phonenumber = localStorage.getItem('phonenumber') || '';
+  otpToken = '';
+  phonenumber = '';
+  form!: FormGroup;
 
-  form = this.fb.group({
-    firstname: ['', Validators.required],
-    lastname: ['', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    verifyPassword: ['', [Validators.required]],
-  });
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router
+  ) {}
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
+  ngOnInit(): void {
+    this.otpToken = localStorage.getItem('otpToken') || '';
+    this.phonenumber = localStorage.getItem('phonenumber') || '';
+
+    this.form = this.fb.group({
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      verifyPassword: ['', Validators.required],
+    });
+  }
 
   submit() {
     if (this.form.invalid || this.form.value.password !== this.form.value.verifyPassword) {
@@ -41,7 +58,10 @@ export class RegisterComponent {
 
     this.auth.register(payload).subscribe({
       next: () => this.router.navigate(['/dashboard']),
-      error: (err) => console.error(err),
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      },
       complete: () => (this.loading = false),
     });
   }
