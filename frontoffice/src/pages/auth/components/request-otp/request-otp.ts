@@ -13,7 +13,7 @@ import { ButtonDirective } from 'primeng/button';
     ButtonDirective
   ]
 })
-export class RequestOtpComponent implements OnInit {
+export class RequestOtp implements OnInit {
   loading = false;
   form!: FormGroup;
 

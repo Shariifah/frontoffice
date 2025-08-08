@@ -16,7 +16,7 @@ import { ButtonModule } from 'primeng/button';
     ButtonModule
   ]
 })
-export class VerifyOtpComponent implements OnInit {
+export class VerifyOtp implements OnInit {
   loading = false;
   phonenumber = '';
   form!: FormGroup;
