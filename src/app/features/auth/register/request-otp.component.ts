@@ -18,7 +18,7 @@ import { MessageService } from 'primeng/api';
             <input pInputText id="phonenumber" class="w-full" formControlName="phonenumber" />
             <label for="phonenumber">Numéro de téléphone</label>
           </span>
-          <button pButton type="submit" label="Recevoir le code" class="w-full" [disabled]="form.invalid || loading()"></button>
+          <p-button type="submit" label="Recevoir le code" styleClass="w-full" [disabled]="form.invalid || loading()"></p-button>
         </form>
       </p-card>
     </div>

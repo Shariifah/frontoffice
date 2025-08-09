@@ -7,6 +7,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 
+
 @Component({
   selector: 'app-change-password',
   imports: [ReactiveFormsModule, Password, Button, Card],
@@ -15,18 +16,18 @@ import { MessageService } from 'primeng/api';
       <p-card header="Changer le mot de passe">
         <form class="space-y-4 w-80" [formGroup]="form" (ngSubmit)="onSubmit()">
           <span class="p-float-label w-full">
-            <input pPassword id="currentPassword" class="w-full" formControlName="currentPassword" [feedback]="false" />
+            <p-password inputId="currentPassword" formControlName="currentPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="currentPassword">Mot de passe actuel</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="newPassword" class="w-full" formControlName="newPassword" [feedback]="false" />
+            <p-password inputId="newPassword" formControlName="newPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="newPassword">Nouveau mot de passe</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="confirmPassword" class="w-full" formControlName="confirmPassword" [feedback]="false" />
+            <p-password inputId="confirmPassword" formControlName="confirmPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="confirmPassword">Confirmer le mot de passe</label>
           </span>
-          <button pButton type="submit" label="Mettre à jour" class="w-full" [disabled]="form.invalid || loading()"></button>
+          <p-button type="submit" label="Mettre à jour" styleClass="w-full" [disabled]="form.invalid || loading()"></p-button>
         </form>
       </p-card>
     </div>

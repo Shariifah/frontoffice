@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
+import { Button } from 'primeng/button';
 import { AuthService } from '../../core/services/auth.service';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Button, Card, NgIf],
+  imports: [Card, Button],
   template: `
     <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <p-card header="Bourgeon">
@@ -15,7 +14,7 @@ import { NgIf } from '@angular/common';
             <p class="text-gray-700">Bienvenue <b>{{ userName() }}</b></p>
           </div>
           <div class="flex gap-2">
-            <button pButton type="button" label="Se déconnecter" class="p-button-danger" (click)="logout()"></button>
+            <p-button type="button" label="Se déconnecter" styleClass="p-button-danger" (onClick)="logout()"></p-button>
           </div>
         </div>
       </p-card>

@@ -7,11 +7,11 @@ import { Password } from 'primeng/password';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { MessageService } from 'primeng/api';
-import { NgIf } from '@angular/common';
+ 
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, InputText, Password, Button, Card, NgIf],
+  imports: [ReactiveFormsModule, RouterLink, InputText, Password, Button, Card],
   template: `
     <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <p-card header="Connexion">
@@ -22,15 +22,15 @@ import { NgIf } from '@angular/common';
           </span>
 
           <span class="p-float-label w-full">
-            <input pPassword id="password" class="w-full" formControlName="password" [feedback]="false" />
+            <p-password inputId="password" formControlName="password" [feedback]="false" styleClass="w-full"></p-password>
             <label for="password">Mot de passe</label>
           </span>
 
-          <button pButton type="submit" label="Se connecter" class="w-full" [disabled]="form.invalid || loading()"></button>
+          <p-button type="submit" label="Se connecter" styleClass="w-full" [disabled]="form.invalid || loading()"></p-button>
 
-          <div class="text-sm flex justify-between">
-            <a routerLink="/auth/register/request-otp" class="text-primary">Créer un compte</a>
-            <a routerLink="/auth/password/request-otp" class="text-primary">Mot de passe oublié ?</a>
+          <div class="text-sm grid grid-cols-2 gap-2">
+            <p-button routerLink="/auth/register/request-otp" label="Créer un compte" styleClass="w-full p-button-secondary"></p-button>
+            <p-button routerLink="/auth/password/request-otp" label="Mot de passe oublié ?" styleClass="w-full p-button-text"></p-button>
           </div>
         </form>
       </p-card>

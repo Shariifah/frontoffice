@@ -20,8 +20,8 @@ import { InputText } from 'primeng/inputtext';
             <label for="phonenumber">Numéro de téléphone</label>
           </span>
           <p-inputotp formControlName="otp" [length]="6"></p-inputotp>
-          <button pButton type="submit" label="Vérifier" class="w-full" [disabled]="form.invalid || loading()"></button>
-          <button pButton type="button" label="Renvoyer" class="w-full p-button-secondary" (click)="resend()" [disabled]="loading()"></button>
+          <p-button type="submit" label="Vérifier" styleClass="w-full" [disabled]="form.invalid || loading()"></p-button>
+          <p-button type="button" label="Renvoyer" styleClass="w-full p-button-secondary" (onClick)="resend()" [disabled]="loading()"></p-button>
         </form>
       </p-card>
     </div>

@@ -21,14 +21,14 @@ import { MessageService } from 'primeng/api';
             <label for="phonenumber">Numéro de téléphone</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="newPassword" class="w-full" formControlName="newPassword" [feedback]="false" />
+            <p-password inputId="newPassword" formControlName="newPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="newPassword">Nouveau mot de passe</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="confirmPassword" class="w-full" formControlName="confirmPassword" [feedback]="false" />
+            <p-password inputId="confirmPassword" formControlName="confirmPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="confirmPassword">Confirmer le mot de passe</label>
           </span>
-          <button pButton type="submit" label="Réinitialiser" class="w-full" [disabled]="form.invalid || loading()"></button>
+          <p-button type="submit" label="Réinitialiser" styleClass="w-full" [disabled]="form.invalid || loading()"></p-button>
         </form>
       </p-card>
     </div>

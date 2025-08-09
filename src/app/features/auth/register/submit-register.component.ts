@@ -29,11 +29,11 @@ import { MessageService } from 'primeng/api';
             <label for="phonenumber">Numéro de téléphone</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="password" class="w-full" formControlName="password" [feedback]="false" />
+            <p-password inputId="password" formControlName="password" [feedback]="false" styleClass="w-full"></p-password>
             <label for="password">Mot de passe</label>
           </span>
           <span class="p-float-label w-full">
-            <input pPassword id="verifyPassword" class="w-full" formControlName="verifyPassword" [feedback]="false" />
+            <p-password inputId="verifyPassword" formControlName="verifyPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="verifyPassword">Confirmer le mot de passe</label>
           </span>
           <button pButton type="submit" label="Créer le compte" class="w-full" [disabled]="form.invalid || loading()"></button>
