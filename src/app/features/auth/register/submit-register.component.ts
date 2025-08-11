@@ -4,37 +4,37 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
-import { Button } from 'primeng/button';
+import {Button, ButtonDirective} from 'primeng/button';
 import { Card } from 'primeng/card';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-submit-register',
-  imports: [ReactiveFormsModule, InputText, Password, Button, Card],
+  imports: [ReactiveFormsModule, InputText, Password, Card, ButtonDirective],
   template: `
     <div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <p-card header="Créer un compte - Étape 3">
         <form class="space-y-4 w-96" [formGroup]="form" (ngSubmit)="onSubmit()">
           <input type="hidden" formControlName="otpToken" />
           <span class="p-float-label w-full">
-            <input pInputText id="firstname" class="w-full" formControlName="firstname" />
             <label for="firstname">Prénom</label>
+            <input pInputText id="firstname" class="w-full" formControlName="firstname" />
           </span>
           <span class="p-float-label w-full">
-            <input pInputText id="lastname" class="w-full" formControlName="lastname" />
             <label for="lastname">Nom</label>
+            <input pInputText id="lastname" class="w-full" formControlName="lastname" />
           </span>
           <span class="p-float-label w-full">
-            <input pInputText id="phonenumber" class="w-full" formControlName="phonenumber" />
             <label for="phonenumber">Numéro de téléphone</label>
+            <input pInputText id="phonenumber" class="w-full" formControlName="phonenumber" />
           </span>
           <span class="p-float-label w-full">
-            <p-password inputId="password" formControlName="password" [feedback]="false" styleClass="w-full"></p-password>
             <label for="password">Mot de passe</label>
+            <p-password inputId="password" formControlName="password" [feedback]="false" class="w-full" ></p-password>
           </span>
           <span class="p-float-label w-full">
-            <p-password inputId="verifyPassword" formControlName="verifyPassword" [feedback]="false" styleClass="w-full"></p-password>
             <label for="verifyPassword">Confirmer le mot de passe</label>
+            <p-password inputId="verifyPassword" formControlName="verifyPassword" [feedback]="false" class="w-full"></p-password>
           </span>
           <button pButton type="submit" label="Créer le compte" class="w-full" [disabled]="form.invalid || loading()"></button>
         </form>
