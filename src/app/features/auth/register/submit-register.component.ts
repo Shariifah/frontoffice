@@ -52,7 +52,7 @@ export class SubmitRegisterComponent {
   readonly loading = signal(false);
 
   readonly form = this.fb.nonNullable.group({
-    otpToken: ['', [Validators.required]],
+    otpToken: [''],
     firstname: ['', [Validators.required]],
     lastname: ['', [Validators.required]],
     phonenumber: ['', [Validators.required]],
