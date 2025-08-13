@@ -38,39 +38,39 @@ export class AuthService {
   readonly user = computed(() => this.userSignal());
 
   requestOtp(payload: RequestOtpRequest) {
-    return this.http.post<RequestOtpResponse>(`${this.apiBaseUrl}/request-otp`, payload);
+    return this.http.post<RequestOtpResponse>(`${this.apiBaseUrl}/auth/request-otp`, payload);
   }
 
   verifyOtp(payload: VerifyOtpRequest) {
-    return this.http.post<VerifyOtpResponse>(`${this.apiBaseUrl}/verify-otp`, payload);
+    return this.http.post<VerifyOtpResponse>(`${this.apiBaseUrl}/auth/verify-otp`, payload);
   }
 
   register(payload: RegisterRequest) {
-    return this.http.post<RegisterResponse>(`${this.apiBaseUrl}/register`, payload);
+    return this.http.post<RegisterResponse>(`${this.apiBaseUrl}/auth/register`, payload);
   }
 
   resendOtp(payload: ResendOtpRequest) {
-    return this.http.post<ResendOtpResponse>(`${this.apiBaseUrl}/resend-otp`, payload);
+    return this.http.post<ResendOtpResponse>(`${this.apiBaseUrl}/auth/resend-otp`, payload);
   }
 
   login(payload: LoginRequest) {
-    return this.http.post<LoginResponse>(`${this.apiBaseUrl}/login`, payload);
+    return this.http.post<LoginResponse>(`${this.apiBaseUrl}/auth/login`, payload);
   }
 
   changePassword(payload: ChangePasswordRequest) {
-    return this.http.post<void>(`${this.apiBaseUrl}/change-password`, payload);
+    return this.http.post<void>(`${this.apiBaseUrl}/auth/change-password`, payload);
   }
 
   requestPasswordResetOtp(payload: PasswordResetRequestOtpRequest) {
-    return this.http.post<RequestOtpResponse>(`${this.apiBaseUrl}/request-password-reset-otp`, payload);
+    return this.http.post<RequestOtpResponse>(`${this.apiBaseUrl}/auth/request-password-reset-otp`, payload);
   }
 
   verifyPasswordResetOtp(payload: PasswordResetVerifyOtpRequest) {
-    return this.http.post<PasswordResetVerifyOtpResponse>(`${this.apiBaseUrl}/verify-password-reset-otp`, payload);
+    return this.http.post<PasswordResetVerifyOtpResponse>(`${this.apiBaseUrl}/auth/verify-password-reset-otp`, payload);
   }
 
   resetPassword(payload: PasswordResetSubmitRequest) {
-    return this.http.post<void>(`${this.apiBaseUrl}/reset-password`, payload);
+    return this.http.post<void>(`${this.apiBaseUrl}/auth/reset-password`, payload);
   }
 
   storeAuth(user: UserDto | null, tokens?: { accessToken: string; refreshToken: string }) {
