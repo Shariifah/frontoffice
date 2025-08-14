@@ -24,10 +24,10 @@ import { MessageService } from 'primeng/api';
             </div>
             <span class="text-sm font-medium text-[#2E5A44]">Numéro</span>
           </div>
-          
+
           <!-- Ligne de connexion -->
           <div class="flex-1 h-0.5 bg-gray-300 mx-4"></div>
-          
+
           <!-- Étape 2 - Inactive -->
           <div class="flex flex-col items-center">
             <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mb-2">
@@ -37,10 +37,10 @@ import { MessageService } from 'primeng/api';
             </div>
             <span class="text-sm text-gray-500">Vérification</span>
           </div>
-          
+
           <!-- Ligne de connexion -->
           <div class="flex-1 h-0.5 bg-gray-300 mx-4"></div>
-          
+
           <!-- Étape 3 - Inactive -->
           <div class="flex flex-col items-center">
             <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mb-2">
@@ -56,14 +56,6 @@ import { MessageService } from 'primeng/api';
       <!-- Contenu principal -->
       <div class="flex items-center justify-center">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-          <!-- Logo -->
-          <div class="flex justify-center mb-6">
-            <div class="bg-[#A3C9A8] rounded-full p-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#2E5A44]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l4-4m0 0l4 4m-4-4v12" />
-              </svg>
-            </div>
-          </div>
 
           <!-- Illustration -->
           <div class="flex justify-center mb-6">
@@ -86,11 +78,11 @@ import { MessageService } from 'primeng/api';
                 <div class="flex-shrink-0 px-3 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">
                   +226
                 </div>
-                <input 
-                  type="tel" 
-                  id="phonenumber" 
+                <input
+                  type="tel"
+                  id="phonenumber"
                   formControlName="phonenumber"
-                  placeholder="70 00 00 00" 
+                  placeholder=""
                   required
                   class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors"
                   [class.border-red-300]="form.get('phonenumber')?.invalid && form.get('phonenumber')?.touched"
@@ -103,7 +95,7 @@ import { MessageService } from 'primeng/api';
               }
             </div>
 
-            <p-button 
+            <p-button
               type="submit"
               [disabled]="form.invalid || loading()"
               label="Recevoir le code"
@@ -137,11 +129,11 @@ export class RequestOtpComponent {
   onSubmit() {
     if (this.form.invalid || this.loading()) return;
     this.loading.set(true);
-    
+
     // Ajouter l'indicatif 226 au numéro
-    const phoneNumber = '+226' + this.form.get('phonenumber')?.value;
+    const phoneNumber = '226' + this.form.get('phonenumber')?.value;
     const payload = { phonenumber: phoneNumber };
-    
+
     this.auth.requestOtp(payload).subscribe({
       next: () => {
         this.messages.add({ severity: 'success', summary: 'OTP envoyé', detail: 'Vérifiez vos SMS' });

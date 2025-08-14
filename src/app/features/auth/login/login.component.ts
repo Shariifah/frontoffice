@@ -11,18 +11,10 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink, Password, Button],
+  imports: [ReactiveFormsModule, RouterLink, InputText, Password, Button, Card],
   template: `
     <div class="bg-[#F8FAF9] flex items-center justify-center min-h-screen p-4">
       <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-        <!-- Logo -->
-        <div class="flex justify-center mb-6">
-          <div class="bg-[#A3C9A8] rounded-full p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#2E5A44]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l4-4m0 0l4 4m-4-4v12" />
-            </svg>
-          </div>
-        </div>
 
         <!-- Illustration -->
         <div class="flex justify-center mb-6">
@@ -49,7 +41,7 @@ import { MessageService } from 'primeng/api';
                 type="tel"
                 id="phonenumber"
                 formControlName="phonenumber"
-                placeholder="70 00 00 00"
+                placeholder=""
                 required
                 class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors"
                 [class.border-red-300]="form.get('phonenumber')?.invalid && form.get('phonenumber')?.touched"
@@ -69,6 +61,7 @@ import { MessageService } from 'primeng/api';
               formControlName="password"
               [feedback]="false"
               [toggleMask]="true"
+              class="w-full"
               placeholder="Votre mot de passe"
               [inputStyleClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors'"
               [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched"
@@ -79,7 +72,6 @@ import { MessageService } from 'primeng/api';
               </div>
             }
           </div>
-
           <p-button
             type="submit"
             [disabled]="form.invalid || loading()"
@@ -126,7 +118,7 @@ export class LoginComponent {
     this.loading.set(true);
 
     // Ajouter l'indicatif 226 au numéro
-    const phoneNumber = '+226' + this.form.get('phonenumber')?.value;
+    const phoneNumber = '226' + this.form.get('phonenumber')?.value;
     const passwordValue = this.form.get('password')?.value;
 
     if (!passwordValue) {

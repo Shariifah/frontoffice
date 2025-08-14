@@ -10,7 +10,7 @@ import { InputText } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-verify-otp',
-  imports: [ReactiveFormsModule, InputOtp, Button],
+  imports: [ReactiveFormsModule, RouterLink, InputOtp, Button, Card, InputText],
   template: `
     <div class="bg-[#F8FAF9] min-h-screen p-4">
       <!-- Barre d'étapes -->
@@ -87,7 +87,7 @@ import { InputText } from 'primeng/inputtext';
               <div class="flex">
                 <div
                   class="flex-shrink-0 px-3 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">
-                  +226
+                  +
                 </div>
                 <input
                   type="tel"
@@ -163,7 +163,7 @@ export class VerifyOtpComponent {
     const phone = this.route.snapshot.queryParamMap.get('phonenumber');
     if (phone) {
       // Extraire le numéro sans l'indicatif pour l'affichage
-      const numberWithoutPrefix = phone.replace('+226', '');
+      const numberWithoutPrefix = phone.replace('', '');
       this.form.patchValue({ phonenumber: numberWithoutPrefix });
     }
   }
@@ -173,7 +173,7 @@ export class VerifyOtpComponent {
     this.loading.set(true);
 
     // Reconstruire le numéro complet avec l'indicatif
-    const fullPhoneNumber = '+226' + this.form.get('phonenumber')?.value;
+    const fullPhoneNumber = '' + this.form.get('phonenumber')?.value;
     const otpValue = this.form.get('otp')?.value;
 
     if (!otpValue) {
@@ -184,9 +184,22 @@ export class VerifyOtpComponent {
     const payload = { phonenumber: fullPhoneNumber, otp: otpValue };
 
     this.auth.verifyOtp(payload).subscribe({
-      next: (res) => {
+      next: (res: any) => {
+        // Stocker l'otpToken dans le localStorage
+        // L'API retourne { success: true, data: { otpToken: "...", phonenumber: "..." } }
+        const otpToken = res.data?.otpToken;
+        const phonenumber = res.data?.phonenumber;
+        
+        if (otpToken) {
+          localStorage.setItem('otpToken', otpToken);
+        }
+        
+        if (phonenumber) {
+          localStorage.setItem('phonenumber', phonenumber);
+        }
+
         this.messages.add({ severity: 'success', summary: 'Code vérifié', detail: 'Veuillez finaliser votre inscription' });
-        this.router.navigate(['/auth/register/submit'], { queryParams: { phonenumber: fullPhoneNumber, otpToken: res.otpToken } });
+        this.router.navigate(['/auth/register/submit']);
       },
       error: (err) => {
         this.messages.add({ severity: 'error', summary: 'Erreur', detail: err?.error?.message ?? 'Code invalide' });
@@ -197,10 +210,10 @@ export class VerifyOtpComponent {
 
   resend() {
     if (this.loading()) return;
-    const phonenumber = '+226' + this.form.controls.phonenumber.value;
+    const phonenumber = '' + this.form.controls.phonenumber.value;
     if (!phonenumber) return;
     this.loading.set(true);
-    this.auth.requestOtp({ phonenumber }).subscribe({
+    this.auth.resendOtp({ phonenumber }).subscribe({
       next: () => this.messages.add({ severity: 'info', summary: 'OTP renvoyé', detail: 'Nouveau code envoyé' }),
       error: (err) => this.messages.add({ severity: 'error', summary: 'Erreur', detail: err?.error?.message ?? 'Échec renvoi OTP' }),
       complete: () => this.loading.set(false)
@@ -208,7 +221,17 @@ export class VerifyOtpComponent {
   }
 
   changeNumber() {
+    // Nettoyer le localStorage avant de retourner à l'étape précédente
+    localStorage.removeItem('otpToken');
+    localStorage.removeItem('phonenumber');
     this.router.navigate(['/auth/register/request-otp']);
+  }
+
+  // Méthode pour nettoyer le localStorage si l'utilisateur quitte
+  ngOnDestroy() {
+    // Optionnel : nettoyer le localStorage si l'utilisateur quitte sans compléter
+    // localStorage.removeItem('otpToken');
+    // localStorage.removeItem('phonenumber');
   }
 }
 

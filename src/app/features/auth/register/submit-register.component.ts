@@ -25,10 +25,10 @@ import { MessageService } from 'primeng/api';
             </div>
             <span class="text-sm font-medium text-[#2E5A44]">Numéro</span>
           </div>
-          
+
           <!-- Ligne de connexion -->
           <div class="flex-1 h-0.5 bg-[#A3C9A8] mx-4"></div>
-          
+
           <!-- Étape 2 - Complétée -->
           <div class="flex flex-col items-center">
             <div class="w-10 h-10 bg-[#A3C9A8] rounded-full flex items-center justify-center mb-2">
@@ -38,10 +38,10 @@ import { MessageService } from 'primeng/api';
             </div>
             <span class="text-sm font-medium text-[#2E5A44]">Vérification</span>
           </div>
-          
+
           <!-- Ligne de connexion -->
           <div class="flex-1 h-0.5 bg-[#A3C9A8] mx-4"></div>
-          
+
           <!-- Étape 3 - Active -->
           <div class="flex flex-col items-center">
             <div class="w-10 h-10 bg-[#2E5A44] rounded-full flex items-center justify-center mb-2">
@@ -57,14 +57,7 @@ import { MessageService } from 'primeng/api';
       <!-- Contenu principal -->
       <div class="flex items-center justify-center">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-          <!-- Logo -->
-          <div class="flex justify-center mb-6">
-            <div class="bg-[#A3C9A8] rounded-full p-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#2E5A44]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l4-4m0 0l4 4m-4-4v12" />
-              </svg>
-            </div>
-          </div>
+
 
           <!-- Illustration -->
           <div class="flex justify-center mb-6">
@@ -82,14 +75,14 @@ import { MessageService } from 'primeng/api';
           <!-- Formulaire -->
           <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
             <input type="hidden" formControlName="otpToken" />
-            
+
             <div>
               <label for="firstname" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-              <input 
-                type="text" 
-                id="firstname" 
+              <input
+                type="text"
+                id="firstname"
                 formControlName="firstname"
-                placeholder="Votre prénom" 
+                placeholder="Votre prénom"
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors"
                 [class.border-red-300]="form.get('firstname')?.invalid && form.get('firstname')?.touched"
@@ -103,11 +96,11 @@ import { MessageService } from 'primeng/api';
 
             <div>
               <label for="lastname" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-              <input 
-                type="text" 
-                id="lastname" 
+              <input
+                type="text"
+                id="lastname"
                 formControlName="lastname"
-                placeholder="Votre nom" 
+                placeholder="Votre nom"
                 required
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors"
                 [class.border-red-300]="form.get('lastname')?.invalid && form.get('lastname')?.touched"
@@ -125,11 +118,11 @@ import { MessageService } from 'primeng/api';
                 <div class="flex-shrink-0 px-3 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-600 font-medium">
                   +226
                 </div>
-                <input 
-                  type="tel" 
-                  id="phonenumber" 
+                <input
+                  type="tel"
+                  id="phonenumber"
                   formControlName="phonenumber"
-                  placeholder="70 00 00 00" 
+                  placeholder=""
                   readonly
                   class="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg bg-gray-50 text-gray-600"
                 >
@@ -138,10 +131,11 @@ import { MessageService } from 'primeng/api';
 
             <div>
               <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-              <p-password 
-                inputId="password" 
-                formControlName="password" 
-                [feedback]="false" 
+              <p-password
+                class="w-full"
+                inputId="password"
+                formControlName="password"
+                [feedback]="false"
                 [toggleMask]="true"
                 placeholder="Votre mot de passe"
                 [inputStyleClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors'"
@@ -156,10 +150,11 @@ import { MessageService } from 'primeng/api';
 
             <div>
               <label for="verifyPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
-              <p-password 
-                inputId="verifyPassword" 
-                formControlName="verifyPassword" 
-                [feedback]="false" 
+              <p-password
+                inputId="verifyPassword"
+                formControlName="verifyPassword"
+                class="w-full"
+                [feedback]="false"
                 [toggleMask]="true"
                 placeholder="Confirmez votre mot de passe"
                 [inputStyleClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors'"
@@ -172,7 +167,7 @@ import { MessageService } from 'primeng/api';
               }
             </div>
 
-            <p-button 
+            <p-button
               type="submit"
               [disabled]="form.invalid || loading()"
               label="Créer mon compte"
@@ -204,13 +199,24 @@ export class SubmitRegisterComponent {
   });
 
   constructor() {
-    const qp = this.route.snapshot.queryParamMap;
-    const otpToken = qp.get('otpToken');
-    const ph = qp.get('phonenumber');
-    if (otpToken) this.form.patchValue({ otpToken });
-    if (ph) {
+    // Récupérer l'otpToken et le phonenumber depuis le localStorage
+    const otpToken = localStorage.getItem('otpToken');
+    const phonenumber = localStorage.getItem('phonenumber');
+
+    // Vérifier que l'utilisateur a bien passé par l'étape de vérification
+    if (!otpToken || !phonenumber) {
+      this.messages.add({ severity: 'error', summary: 'Erreur', detail: 'Session invalide. Veuillez recommencer le processus d\'inscription.' });
+      this.router.navigate(['/auth/register/request-otp']);
+      return;
+    }
+
+    if (otpToken) {
+      this.form.patchValue({ otpToken });
+    }
+
+    if (phonenumber) {
       // Extraire le numéro sans l'indicatif pour l'affichage
-      const numberWithoutPrefix = ph.replace('+226', '');
+      const numberWithoutPrefix = phonenumber.replace('226', '');
       this.form.patchValue({ phonenumber: numberWithoutPrefix });
     }
   }
@@ -218,17 +224,31 @@ export class SubmitRegisterComponent {
   onSubmit() {
     if (this.form.invalid || this.loading()) return;
     this.loading.set(true);
-    
-    // Reconstruire le numéro complet avec l'indicatif
-    const fullPhoneNumber = '+226' + this.form.get('phonenumber')?.value;
+
+    // Récupérer les données depuis le localStorage
+    const otpToken = localStorage.getItem('otpToken');
+    const fullPhoneNumber = localStorage.getItem('phonenumber');
+
+    if (!otpToken || !fullPhoneNumber) {
+      this.messages.add({ severity: 'error', summary: 'Erreur', detail: 'Données de session manquantes. Veuillez recommencer.' });
+      this.loading.set(false);
+      return;
+    }
+
+    // Préparer les données pour l'inscription
     const formData = this.form.getRawValue();
+    formData.otpToken = otpToken;
     formData.phonenumber = fullPhoneNumber;
-    
+
     this.auth.register(formData).subscribe({
       next: (res) => {
+        // Nettoyer le localStorage après inscription réussie
+        localStorage.removeItem('otpToken');
+        localStorage.removeItem('phonenumber');
+
         this.auth.storeAuth(res.user, { accessToken: res.accessToken, refreshToken: res.refreshToken });
         this.messages.add({ severity: 'success', summary: 'Inscription réussie', detail: 'Bienvenue sur Bourgeon' });
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/dashboard');
       },
       error: (err) => this.messages.add({ severity: 'error', summary: 'Erreur', detail: err?.error?.message ?? "Échec de l'inscription" }),
       complete: () => this.loading.set(false)

@@ -14,20 +14,16 @@ import { InputText } from 'primeng/inputtext';
   template: `
     <div class="bg-[#F8FAF9] flex items-center justify-center min-h-screen p-4">
       <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-        <!-- Logo -->
-        <div class="flex justify-center mb-6">
-          <div class="bg-[#A3C9A8] rounded-full p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#2E5A44]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l4-4m0 0l4 4m-4-4v12" />
-            </svg>
-          </div>
-        </div>
+
 
         <!-- Illustration -->
         <div class="flex justify-center mb-6">
-          <div class="w-24 h-24 bg-gradient-to-br from-[#A3C9A8] to-[#2E5A44] rounded-full flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div
+            class="w-24 h-24 bg-gradient-to-br from-[#A3C9A8] to-[#2E5A44] rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
         </div>
@@ -40,11 +36,11 @@ import { InputText } from 'primeng/inputtext';
         <form class="space-y-5" [formGroup]="form" (ngSubmit)="onSubmit()">
           <div>
             <label for="phonenumber" class="block text-sm font-medium text-gray-700 mb-1">Numéro de téléphone</label>
-            <input 
-              type="tel" 
-              id="phonenumber" 
+            <input
+              type="tel"
+              id="phonenumber"
               formControlName="phonenumber"
-              placeholder="+226 70 00 00 00" 
+              placeholder=""
               readonly
               class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
             >
@@ -53,34 +49,35 @@ import { InputText } from 'primeng/inputtext';
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-3">Code de vérification</label>
             <div class="flex justify-center">
-              <p-inputotp 
-                formControlName="otp" 
+              <p-inputotp
+                formControlName="otp"
                 [length]="6"
-                [inputStyleClass]="'w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2E5A44] focus:border-[#2E5A44] transition-colors'"
-                [inputStyle]="{'margin': '0 4px'}"
               ></p-inputotp>
             </div>
-            <div *ngIf="form.get('otp')?.invalid && form.get('otp')?.touched" class="text-red-500 text-sm mt-2 text-center">
+            <div [@If]="form.get('otp')?.invalid && form.get('otp')?.touched"
+                 class="text-red-500 text-sm mt-2 text-center">
               Le code doit contenir 6 chiffres
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             [disabled]="form.invalid || loading()"
             class="w-full bg-[#2E5A44] text-white py-3 rounded-lg hover:bg-[#244734] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            <span *ngIf="!loading()">Vérifier le code</span>
-            <span *ngIf="loading()" class="flex items-center justify-center">
-              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <span [@if]="!loading()">Vérifier le code</span>
+            <span [@if]="loading()" class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                   viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path class="opacity-75" fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               Vérification...
             </span>
           </button>
 
-          <button 
+          <button
             type="button"
             (click)="resend()"
             [disabled]="loading()"
