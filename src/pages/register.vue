@@ -24,9 +24,6 @@ definePage({
 const isPasswordVisible = ref(false)
 const isConfirmPasswordVisible = ref(false)
 // Réinitialiser le processus au montage du composant
-onMounted(() => {
-  resetRegistration()
-})
 
 // Register composable
 const {
@@ -143,6 +140,13 @@ const items = [
     icon: 'tabler-user',
   },
 ]
+
+onMounted(() => {
+  resetRegistration()
+})
+
+
+
 </script>
 
 <template>
@@ -336,7 +340,7 @@ const items = [
             :disabled="!step1Form.phonenumber || !rules.phone(step1Form.phonenumber)"
             @click="handleRequestOtp"
           >
-            Commencer l'inscription
+            Send OTP
             <VIcon
               icon="tabler-arrow-right"
               end

@@ -157,7 +157,7 @@ export const useRegister = () => {
       registrationData.value.phonenumber = phonenumber
       
       success(`Code de vérification envoyé au ${phonenumber}`)
-      currentStep.value = 2
+      currentStep.value = 1
       
       return response
     } catch (err) {
@@ -189,7 +189,7 @@ export const useRegister = () => {
       console.log('Token OTP sauvegardé:', otpToken.value) // Debug
       
       success('Code vérifié avec succès !')
-      currentStep.value = 3
+      currentStep.value = 2
       
       return response
     } catch (err) {
@@ -272,14 +272,14 @@ export const useRegister = () => {
 
   // Réinitialiser le processus d'inscription
   const resetRegistration = () => {
-    currentStep.value = 1
+    currentStep.value = 0
     otpToken.value = null
     registrationData.value = {}
   }
 
   // Retourner à l'étape précédente
   const goToPreviousStep = () => {
-    if (currentStep.value > 1) {
+    if (currentStep.value > 0) {
       currentStep.value--
     }
   }

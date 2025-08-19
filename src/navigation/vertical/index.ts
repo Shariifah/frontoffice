@@ -5,24 +5,24 @@ export default [
     icon: { icon: 'tabler-smart-home' },
   },
   {
-    title: 'Cours',
-    to: { path: '/courses' },
+    title: 'Sujets disponibles',
+    to: { path: '/subjects' },
     icon: { icon: 'tabler-book' },
   },
   {
-    title: 'Exercices',
-    to: { path: '/exercises' },
+    title: 'Mes compositions',
+    to: { path: '/compositions' },
     icon: { icon: 'tabler-pencil' },
   },
   {
-    title: 'Progression',
-    to: { path: '/progress' },
+    title: 'Mes performances',
+    to: { path: '/performance' },
     icon: { icon: 'tabler-chart-line' },
   },
   {
-    title: 'Certificats',
-    to: { path: '/certificates' },
-    icon: { icon: 'tabler-certificate' },
+    title: 'Mon abonnement',
+    to: { path: '/subscription' },
+    icon: { icon: 'tabler-crown' },
   },
   {
     title: 'Tarifs',

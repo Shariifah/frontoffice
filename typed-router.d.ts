@@ -20,18 +20,18 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     'root': RouteRecordInfo<'root', '/', Record<never, never>, Record<never, never>>,
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'certificates': RouteRecordInfo<'certificates', '/certificates', Record<never, never>, Record<never, never>>,
-    'courses': RouteRecordInfo<'courses', '/courses', Record<never, never>, Record<never, never>>,
+    'compositions': RouteRecordInfo<'compositions', '/compositions', Record<never, never>, Record<never, never>>,
     'dashboard': RouteRecordInfo<'dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
-    'exercises': RouteRecordInfo<'exercises', '/exercises', Record<never, never>, Record<never, never>>,
     'forgot-password': RouteRecordInfo<'forgot-password', '/forgot-password', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'payment': RouteRecordInfo<'payment', '/payment', Record<never, never>, Record<never, never>>,
+    'performance': RouteRecordInfo<'performance', '/performance', Record<never, never>, Record<never, never>>,
     'pricing': RouteRecordInfo<'pricing', '/pricing', Record<never, never>, Record<never, never>>,
     'profile': RouteRecordInfo<'profile', '/profile', Record<never, never>, Record<never, never>>,
-    'progress': RouteRecordInfo<'progress', '/progress', Record<never, never>, Record<never, never>>,
     'register': RouteRecordInfo<'register', '/register', Record<never, never>, Record<never, never>>,
     'second-page': RouteRecordInfo<'second-page', '/second-page', Record<never, never>, Record<never, never>>,
+    'subjects': RouteRecordInfo<'subjects', '/subjects', Record<never, never>, Record<never, never>>,
+    'subscription': RouteRecordInfo<'subscription', '/subscription', Record<never, never>, Record<never, never>>,
     'support': RouteRecordInfo<'support', '/support', Record<never, never>, Record<never, never>>,
   }
 }
