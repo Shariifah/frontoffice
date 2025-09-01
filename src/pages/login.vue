@@ -10,6 +10,8 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { useRouter } from 'vue-router'
+
 
 definePage({
   meta: {
@@ -25,6 +27,7 @@ const form = ref({
 })
 
 const isPasswordVisible = ref(false)
+const router = useRouter()
 
 // Auth composable
 const { login, isLoading } = useAuth()
@@ -52,7 +55,7 @@ const isFormValid = computed(() => {
 const handleLogin = async () => {
   try {
     await login(form.value.phonenumber, form.value.password)
-    // La redirection est gérée dans le composable
+    router.push('/dashboard')
   } catch (error) {
     // L'erreur est déjà gérée dans le composable
     console.error('Erreur de connexion:', error)

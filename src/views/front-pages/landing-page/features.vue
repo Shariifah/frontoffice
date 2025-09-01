@@ -10,14 +10,14 @@ const featuresData = [
   { title: 'Cours Interactifs', desc: 'Des cours conçus pour une compréhension facile et un apprentissage efficace.', icon: laptop },
   { title: 'Mises à Jour Régulières', desc: 'Nouveaux contenus et fonctionnalités ajoutés régulièrement pour enrichir votre parcours.', icon: rocket },
   { title: 'Kit de Démarrage', desc: 'Commencez rapidement votre apprentissage sans perdre de temps sur la configuration.', icon: paper },
-  { title: 'API Prête', desc: 'Intégration facile avec vos outils existants pour un apprentissage personnalisé.', icon: check },
-  { title: 'Support Excellent', desc: 'Une documentation claire avec de nombreux exemples et références pratiques.', icon: user },
-  { title: 'Bien Documenté', desc: 'Des guides détaillés et des tutoriels pour vous accompagner à chaque étape.', icon: keyboard },
+  { title: 'Interface Intuitive', desc: 'Une plateforme simple et facile à utiliser pour un apprentissage optimal.', icon: check },
+  { title: 'Support Excellent', desc: 'Une équipe dédiée pour vous accompagner dans votre parcours d\'apprentissage.', icon: user },
+  { title: 'Ressources Complètes', desc: 'Des guides détaillés et des tutoriels pour vous accompagner à chaque étape.', icon: keyboard },
 ]
 </script>
 
 <template>
-  <VContainer id="features">
+  <VContainer id="fonctionnalites">
     <div class="feature-cards">
       <div class="headers d-flex justify-center flex-column align-center mb-12">
         <VChip

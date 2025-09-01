@@ -17,7 +17,7 @@ const registerMultiStepBg = useGenerateImageVariant(registerMultiStepBgLight, re
 definePage({
   meta: {
     layout: 'blank',
-    public: true
+    public: true,
   },
 })
 

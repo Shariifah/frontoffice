@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from './useNotification'
+import { API_CONFIG, ENDPOINTS } from '@/config/api'
 
 // Types pour l'inscription
 interface RegisterStep1Data {
@@ -13,28 +14,23 @@ interface RegisterStep2Data {
 }
 
 interface RegisterStep3Data {
+  phonenumber: string
   otpToken: string
   firstname: string
   lastname: string
-  phonenumber: string
   password: string
-  verifyPassword: string
+  confirmPassword: string
 }
 
 interface RequestOtpResponse {
-  success: boolean
-  code: number
   message: string
   data: {
     phonenumber: string
     expiresIn: string
-    attemptsRemaining: number
   }
 }
 
 interface VerifyOtpResponse {
-  success: boolean
-  code: number
   message: string
   data: {
     otpToken: string
@@ -44,8 +40,6 @@ interface VerifyOtpResponse {
 }
 
 interface RegisterResponse {
-  success: boolean
-  code: number
   message: string
   data: {
     user: {
@@ -64,8 +58,6 @@ interface RegisterResponse {
 }
 
 interface ResendOtpResponse {
-  success: boolean
-  code: number
   message: string
   data: {
     phonenumber: string
@@ -87,12 +79,9 @@ export const useRegister = () => {
   const router = useRouter()
   const { success, error, info } = useNotification()
 
-  // Configuration API
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
-
   // Fonction utilitaire pour les appels API
   const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-    const url = `${API_BASE_URL}/auth${endpoint}`
+    const url = `${API_CONFIG.BASE_URL}${endpoint}`
     console.log('URL de l\'API:', url) // Debug
     
     const defaultOptions: RequestInit = {
@@ -148,7 +137,7 @@ export const useRegister = () => {
     try {
       isLoading.value = true
       
-      const response = await apiCall<RequestOtpResponse>('/request-otp', {
+      const response = await apiCall<RequestOtpResponse>(ENDPOINTS.AUTH.REQUEST_OTP, {
         method: 'POST',
         body: JSON.stringify({ phonenumber }),
       })
@@ -179,21 +168,20 @@ export const useRegister = () => {
         throw new Error('Numéro de téléphone manquant')
       }
 
-      const response = await apiCall<VerifyOtpResponse>('/verify-otp', {
+      const response = await apiCall<VerifyOtpResponse>(ENDPOINTS.AUTH.VERIFY_OTP, {
         method: 'POST',
         body: JSON.stringify({ phonenumber, otp }),
       })
 
       // Sauvegarder le token OTP
       otpToken.value = response.data.otpToken
-      console.log('Token OTP sauvegardé:', otpToken.value) // Debug
       
-      success('Code vérifié avec succès !')
+      success('Code de vérification validé !')
       currentStep.value = 2
       
       return response
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Code de vérification incorrect'
+      const message = err instanceof Error ? err.message : 'Erreur lors de la vérification du code'
       error(message)
       throw err
     } finally {
@@ -215,7 +203,7 @@ export const useRegister = () => {
         throw new Error('Numéro de téléphone manquant')
       }
 
-      const response = await apiCall<RegisterResponse>('/register', {
+      const response = await apiCall<RegisterResponse>(ENDPOINTS.AUTH.REGISTER, {
         method: 'POST',
         body: JSON.stringify({
           otpToken: otpToken.value,
@@ -253,7 +241,7 @@ export const useRegister = () => {
         throw new Error('Numéro de téléphone manquant')
       }
 
-      const response = await apiCall<ResendOtpResponse>('/resend-otp', {
+      const response = await apiCall<ResendOtpResponse>(ENDPOINTS.AUTH.RESEND_OTP, {
         method: 'POST',
         body: JSON.stringify({ phonenumber }),
       })

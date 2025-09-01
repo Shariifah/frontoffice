@@ -94,9 +94,9 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
       <div>
         <div class="d-flex flex-column gap-y-4 pa-4">
           <RouterLink
-            v-for="(item, index) in ['Home', 'Features', 'Team', 'FAQ', 'Contact us']"
+            v-for="(item, index) in ['Accueil', 'Fonctionnalités', 'Équipe', 'FAQ', 'Contact']"
             :key="index"
-            :to="{ path: '/', hash: `#${item.toLowerCase().replace(' ', '-')}` }"
+            :to="{ path: '/', hash: `#${item.toLowerCase().replace('é', 'e').replace('à', 'a')}` }"
             class="nav-link font-weight-medium"
             :class="[props.activeId?.toLocaleLowerCase().replace('-', ' ') === item.toLocaleLowerCase() ? 'active-link' : '']"
           >
@@ -217,15 +217,15 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
 
           <!-- landing page sections -->
           <div class="text-base align-center d-none d-md-flex">
-            <RouterLink
-              v-for="(item, index) in ['Home', 'Features', 'Team', 'FAQ', 'Contact us']"
-              :key="index"
-              :to="{ path: '/', hash: `#${item.toLowerCase().replace(' ', '-')}` }"
-              class="nav-link font-weight-medium py-2 px-2 px-lg-4"
-              :class="[props.activeId?.toLocaleLowerCase().replace('-', ' ') === item.toLocaleLowerCase() ? 'active-link' : '']"
-            >
-              {{ item }}
-            </RouterLink>
+                      <RouterLink
+            v-for="(item, index) in ['Accueil', 'Fonctionnalités', 'Équipe', 'FAQ', 'Contact']"
+            :key="index"
+            :to="{ path: '/', hash: `#${item.toLowerCase().replace('é', 'e').replace('à', 'a')}` }"
+            class="nav-link font-weight-medium py-2 px-2 px-lg-4"
+            :class="[props.activeId?.toLocaleLowerCase().replace('-', ' ') === item.toLocaleLowerCase() ? 'active-link' : '']"
+          >
+            {{ item }}
+          </RouterLink>
 
             <!-- Pages Menu -->
             <span
@@ -309,16 +309,10 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
             </span>
 
             <RouterLink
-              to="/pricing"
-              class="font-weight-medium nav-link"
-            >
-              Tarifs
-            </RouterLink>
-            <RouterLink
               to="/dashboard"
               class="font-weight-medium nav-link"
             >
-              Dashboard
+              Accéder
             </RouterLink>
           </div>
         </div>

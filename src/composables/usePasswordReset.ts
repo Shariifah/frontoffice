@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from './useNotification'
+import { API_CONFIG, ENDPOINTS } from '@/config/api'
 
 // Types pour la réinitialisation de mot de passe
 interface PasswordResetStep1Data {
@@ -51,7 +52,7 @@ export const usePasswordReset = () => {
   const { success, error, info } = useNotification()
 
   // Configuration API
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
+  const API_BASE_URL = process.env.VITE_API_BASE_URL || 'http://localhost:3001/api'
 
   // Fonction utilitaire pour les appels API
   const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {

@@ -1,289 +1,238 @@
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
+import { useSubjects } from '@/composables/useSubjects'
+import { useSubscription } from '@/composables/useSubscription'
+import { API_CONFIG } from '@/config/api'
 
 definePage({
   meta: {
     layout: 'default',
-    middleware: 'auth',
+    requiresAuth: true,
   },
 })
 
-const { user } = useAuth()
+const { user, isAuthenticated } = useAuth()
+const { subjects, coursSubjects, examSubjects, isLoading, fetchAllSubjects, fetchSubjectsByType } = useSubjects()
+const { hasActiveSubscription } = useSubscription()
 
-// Données simulées des sujets
-const subjects = ref([
-  {
-    id: 1,
-    title: 'Mathématiques - Niveau Terminale',
-    subject: 'Mathématiques',
-    level: 'Terminale',
-    duration: '3 heures',
-    questions: 25,
-    available: true,
-    period: 'Janvier 2024',
-    description: 'Sujet complet de mathématiques couvrant l\'algèbre, la géométrie et l\'analyse.',
-    image: '/src/assets/images/subjects/math.jpg',
-  },
-  {
-    id: 2,
-    title: 'Physique-Chimie - Niveau Terminale',
-    subject: 'Physique-Chimie',
-    level: 'Terminale',
-    duration: '3 heures',
-    questions: 20,
-    available: true,
-    period: 'Janvier 2024',
-    description: 'Sujet de physique-chimie avec exercices pratiques et théoriques.',
-    image: '/src/assets/images/subjects/physics.jpg',
-  },
-  {
-    id: 3,
-    title: 'Français - Niveau Terminale',
-    subject: 'Français',
-    level: 'Terminale',
-    duration: '4 heures',
-    questions: 15,
-    available: true,
-    period: 'Janvier 2024',
-    description: 'Composition française avec commentaire de texte et dissertation.',
-    image: '/src/assets/images/subjects/french.jpg',
-  },
-  {
-    id: 4,
-    title: 'Histoire-Géographie - Niveau Terminale',
-    subject: 'Histoire-Géographie',
-    level: 'Terminale',
-    duration: '3 heures',
-    questions: 18,
-    available: false,
-    period: 'Février 2024',
-    description: 'Sujet d\'histoire-géographie avec cartographie et analyse documentaire.',
-    image: '/src/assets/images/subjects/history.jpg',
-  },
-])
-
+// Filtres
+const selectedType = ref<'cours' | 'examen'>('cours')
 const selectedSubject = ref('')
-const selectedLevel = ref('')
 
+// Charger les données au montage du composant
+onMounted(async () => {
+  try {
+    await fetchAllSubjects()
+  } catch (error) {
+    console.error('Erreur lors du chargement des sujets:', error)
+  }
+})
+
+// Computed pour filtrer les sujets
 const subjectsFilter = computed(() => {
-  let filtered = subjects.value
+  let filtered = selectedType.value === 'cours' ? coursSubjects.value : examSubjects.value
 
   if (selectedSubject.value) {
-    filtered = filtered.filter(s => s.subject === selectedSubject.value)
-  }
-
-  if (selectedLevel.value) {
-    filtered = filtered.filter(s => s.level === selectedLevel.value)
+    filtered = filtered.filter(s => s.title.toLowerCase().includes(selectedSubject.value.toLowerCase()))
   }
 
   return filtered
 })
 
-const availableSubjects = computed(() => subjects.value.map(s => s.subject).filter((v, i, a) => a.indexOf(v) === i))
-const availableLevels = computed(() => subjects.value.map(s => s.level).filter((v, i, a) => a.indexOf(v) === i))
+// Computed pour les types disponibles
+const availableTypes = computed(() => [
+  { value: 'cours', label: 'Cours' },
+  { value: 'examen', label: 'Examens' }
+])
+
+// Computed pour les matières disponibles
+const availableSubjects = computed(() => {
+  const currentSubjects = selectedType.value === 'cours' ? coursSubjects.value : examSubjects.value
+  return [...new Set(currentSubjects.map(s => s.title.split(' - ')[0]))]
+})
+
+// Fonction pour formater la date
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long'
+  })
+}
+
+// Fonction pour obtenir l'icône selon le type
+const getSubjectIcon = (type: string) => {
+  return type === 'cours' ? 'tabler-book' : 'tabler-file-text'
+}
+
+// Fonction pour obtenir la couleur selon le type
+const getSubjectColor = (type: string) => {
+  return type === 'cours' ? 'primary' : 'success'
+}
 </script>
 
 <template>
   <div class="subjects-container">
     <VContainer>
-      <VRow>
-        <VCol cols="12">
-          <VCard>
-            <VCardTitle class="d-flex justify-space-between align-center">
-              <h2>Sujets disponibles</h2>
-              <VBtn
-                color="primary"
-                variant="outlined"
-                to="/subscription"
-              >
-                Vérifier mon abonnement
-              </VBtn>
-            </VCardTitle>
-            <VCardText>
-              <p class="text-body-1 mb-6">
-                Consultez les sujets disponibles pour la composition selon votre abonnement et la période de disponibilité.
-              </p>
+      <!-- Header -->
+      <div class="d-flex justify-space-between align-center mb-6">
+        <div>
+          <h1 class="text-h4 font-weight-bold mb-2">
+            Sujets disponibles
+          </h1>
+          <p class="text-body-1 text-medium-emphasis">
+            Consultez les sujets disponibles selon votre abonnement
+          </p>
+        </div>
+        <VBtn
+          color="primary"
+          variant="outlined"
+          to="/subscription"
+        >
+          Vérifier mon abonnement
+        </VBtn>
+      </div>
               
               <!-- Filtres -->
-              <VRow class="mb-6">
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    v-model="selectedSubject"
-                    label="Filtrer par matière"
-                    :items="availableSubjects"
-                    clearable
-                    variant="outlined"
-                    prepend-inner-icon="tabler-book"
-                  />
-                </VCol>
-                <VCol
-                  cols="12"
-                  md="6"
-                >
-                  <VSelect
-                    v-model="selectedLevel"
-                    label="Filtrer par niveau"
-                    :items="availableLevels"
-                    clearable
-                    variant="outlined"
-                    prepend-inner-icon="tabler-school"
-                  />
-                </VCol>
-              </VRow>
+              <div class="d-flex gap-4 mb-6">
+                <VSelect
+                  v-model="selectedType"
+                  label="Type de contenu"
+                  :items="availableTypes"
+                  item-title="label"
+                  item-value="value"
+                  variant="outlined"
+                  prepend-inner-icon="tabler-category"
+                  style="min-width: 200px;"
+                />
+                <VTextField
+                  v-model="selectedSubject"
+                  label="Rechercher par titre"
+                  placeholder="Ex: Mathématiques, Physique..."
+                  variant="outlined"
+                  prepend-inner-icon="tabler-search"
+                  clearable
+                  style="flex: 1;"
+                />
+              </div>
               
+              <!-- Loading state -->
+              <div v-if="isLoading" class="d-flex flex-wrap gap-4">
+                <VSkeletonLoader
+                  v-for="i in 6"
+                  :key="i"
+                  type="card"
+                  class="subject-card"
+                  style="width: 300px; height: 200px;"
+                />
+              </div>
+
               <!-- Liste des sujets -->
-              <VRow>
-                <VCol
-                  v-for="subject in subjectsFilter"
-                  :key="subject.id"
-                  cols="12"
-                  md="6"
-                  lg="4"
+              <div v-else>
+                <div
+                  v-if="subjectsFilter.length === 0"
+                  class="text-center py-12"
                 >
-                  <VCard
-                    variant="outlined"
+                  <VIcon
+                    icon="tabler-file-off"
+                    size="64"
+                    color="disabled"
+                    class="mb-4"
+                  />
+                  <h4 class="text-h6 text-medium-emphasis">
+                    Aucun sujet trouvé
+                  </h4>
+                  <p class="text-body-2 text-medium-emphasis">
+                    Aucun {{ selectedType }} ne correspond à votre recherche.
+                  </p>
+                </div>
+
+                <div class="d-flex flex-wrap gap-4">
+                  <div
+                    v-for="subject in subjectsFilter"
+                    :key="subject._id"
                     class="subject-card"
-                    :class="{ 'disabled': !subject.available }"
                   >
-                    <VCardText>
-                      <div class="d-flex align-center justify-space-between mb-4">
-                        <VChip
-                          :color="subject.available ? 'success' : 'warning'"
-                          size="small"
-                        >
-                          {{ subject.available ? 'Disponible' : 'Bientôt disponible' }}
-                        </VChip>
-                        <VChip
-                          color="primary"
-                          size="small"
-                        >
-                          {{ subject.subject }}
-                        </VChip>
-                      </div>
-                      
-                      <h4 class="text-h6 mb-2">
-                        {{ subject.title }}
-                      </h4>
-                      
-                      <p class="text-body-2 mb-4">
-                        {{ subject.description }}
-                      </p>
-                      
-                      <div class="mb-4">
-                        <div class="d-flex align-center justify-space-between mb-2">
-                          <div class="d-flex align-center">
-                            <VIcon
-                              icon="tabler-clock"
-                              size="16"
-                              class="me-1"
-                            />
-                            <span class="text-caption">{{ subject.duration }}</span>
-                          </div>
-                          
-                          <div class="d-flex align-center">
-                            <VIcon
-                              icon="tabler-help"
-                              size="16"
-                              class="me-1"
-                            />
-                            <span class="text-caption">{{ subject.questions }} questions</span>
-                          </div>
-                        </div>
-                        
-                        <div class="d-flex align-center justify-space-between">
-                          <div class="d-flex align-center">
-                            <VIcon
-                              icon="tabler-calendar"
-                              size="16"
-                              class="me-1"
-                            />
-                            <span class="text-caption">{{ subject.period }}</span>
-                          </div>
-                          
-                          <div class="d-flex align-center">
-                            <VIcon
-                              icon="tabler-school"
-                              size="16"
-                              class="me-1"
-                            />
-                            <span class="text-caption">{{ subject.level }}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <VBtn
-                        v-if="subject.available"
-                        block
-                        color="primary"
-                        variant="tonal"
-                        :to="`/subject/${subject.id}`"
+                    <div class="subject-header">
+                      <VChip
+                        :color="getSubjectColor(subject.type)"
+                        size="small"
                       >
                         <VIcon
-                          icon="tabler-eye"
+                          :icon="getSubjectIcon(subject.type)"
+                          size="16"
+                          class="me-1"
+                        />
+                        {{ subject.type === 'cours' ? 'Cours' : 'Examen' }}
+                      </VChip>
+                      <span class="text-caption text-medium-emphasis">
+                        {{ formatDate(subject.createdAt) }}
+                      </span>
+                    </div>
+                    
+                    <h4 class="subject-title">
+                      {{ subject.title }}
+                    </h4>
+                    
+                    <div class="subject-actions">
+                      <VBtn
+                        v-if="hasActiveSubscription"
+                        color="primary"
+                        variant="tonal"
+                        size="small"
+                        :href="`${API_CONFIG.BASE_URL}/subjects/download/${subject._id}`"
+                        target="_blank"
+                      >
+                        <VIcon
+                          icon="tabler-download"
                           size="16"
                           class="me-2"
                         />
-                        Consulter le sujet
+                        Télécharger
                       </VBtn>
                       
                       <VBtn
                         v-else
-                        block
                         color="warning"
                         variant="tonal"
-                        disabled
+                        size="small"
+                        to="/subscription"
                       >
                         <VIcon
-                          icon="tabler-clock"
+                          icon="tabler-crown"
                           size="16"
                           class="me-2"
                         />
-                        Disponible le {{ subject.period }}
+                        Abonnement requis
                       </VBtn>
-                    </VCardText>
-                  </VCard>
-                </VCol>
-              </VRow>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <!-- Informations importantes -->
-              <VRow class="mt-8">
-                <VCol cols="12">
-                  <VCard
-                    variant="outlined"
+              <div class="mt-8 p-4 bg-info-lighten-5 rounded-lg border border-info-lighten-3">
+                <div class="d-flex align-center">
+                  <VIcon
+                    icon="tabler-info-circle"
+                    size="24"
                     color="info"
-                  >
-                    <VCardText>
-                      <div class="d-flex align-center">
-                        <VIcon
-                          icon="tabler-info-circle"
-                          size="24"
-                          color="info"
-                          class="me-3"
-                        />
-                        <div>
-                          <h5 class="text-h6 mb-1">
-                            Informations importantes
-                          </h5>
-                          <ul class="text-body-2 mb-0">
-                            <li>Les sujets sont consultables en lecture seule (PDF)</li>
-                            <li>Le téléchargement des sujets est désactivé</li>
-                            <li>Chaque sujet ne peut être composé qu'une seule fois</li>
-                            <li>La note est affichée immédiatement après soumission</li>
-                            <li>Assurez-vous que votre abonnement est actif</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </VCardText>
-                  </VCard>
-                </VCol>
-              </VRow>
-            </VCardText>
-          </VCard>
-        </VCol>
-      </VRow>
+                    class="me-3"
+                  />
+                  <div>
+                    <h5 class="text-h6 mb-2">
+                      Informations importantes
+                    </h5>
+                    <ul class="text-body-2 mb-0">
+                      <li>Les sujets sont disponibles au format PDF</li>
+                      <li>Un abonnement actif est requis pour télécharger les documents</li>
+                      <li>Les cours et examens sont mis à jour régulièrement</li>
+                      <li>Assurez-vous que votre abonnement est actif</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+
     </VContainer>
   </div>
 </template>
@@ -294,15 +243,49 @@ const availableLevels = computed(() => subjects.value.map(s => s.level).filter((
 }
 
 .subject-card {
-  height: 100%;
-  transition: transform 0.2s ease-in-out;
+  width: 300px;
+  padding: 1.5rem;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-radius: 12px;
+  background: rgb(var(--v-theme-surface));
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .subject-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgb(var(--v-theme-primary));
 }
 
-.subject-card.disabled {
-  opacity: 0.7;
+.subject-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subject-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+}
+
+.subject-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .subject-card {
+    width: 100%;
+  }
+  
+  .d-flex.gap-4 {
+    flex-direction: column;
+  }
 }
 </style>

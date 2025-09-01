@@ -45,15 +45,15 @@ const reviewData = [
     img: logo2,
     rating: 5,
     name: 'Thomas Martin',
-    position: 'Développeur junior',
+    position: 'Étudiant en développement',
     avatar: avatar2,
   },
   {
-    desc: 'This template is superior in so many ways. The code, the design, the regular updates, the support.. It\'s the whole package. Excellent Work.',
+    desc: 'Grâce à Bourgeon, j\'ai pu améliorer mes compétences en programmation. Les cours sont bien structurés et le support est excellent.',
     img: logo3,
-    rating: 4,
-    name: 'Eugenia Moore',
-    position: 'CTO of Airbnb',
+    rating: 5,
+    name: 'Sophie Bernard',
+    position: 'Étudiante en ingénierie',
     avatar: avatar3,
   },
   {
@@ -73,43 +73,43 @@ const reviewData = [
     avatar: avatar5,
   },
   {
-    desc: 'I\'ve never used a theme as versatile and flexible as Vuexy. It\'s my go to for building dashboard sites on almost any project.',
+    desc: 'La qualité des cours sur Bourgeon est exceptionnelle. J\'ai pu apprendre à mon rythme et les projets pratiques m\'ont beaucoup aidé.',
     img: logo1,
     rating: 5,
-    name: 'Eugenia Moore',
-    position: 'Founder of Hubspot',
+    name: 'Emma Rousseau',
+    position: 'Étudiante en design',
     avatar: avatar1,
   },
   {
-    desc: 'Vuexy is awesome, and I particularly enjoy knowing that if I get stuck on something, there is always a helpful community to assist me.',
+    desc: 'Bourgeon m\'a permis de découvrir ma passion pour la programmation. L\'approche pédagogique est parfaite pour les débutants.',
     img: logo2,
     rating: 5,
-    name: 'Tommy haffman',
-    position: 'Founder of Levis',
+    name: 'Pierre Moreau',
+    position: 'Étudiant en mathématiques',
     avatar: avatar2,
   },
   {
-    desc: 'This template is superior in so many ways. The code, the design, the regular updates, the support.. It\'s the whole package. Excellent Work.',
+    desc: 'Je recommande Bourgeon à tous les étudiants qui veulent se former en ligne. La plateforme est complète et les résultats sont au rendez-vous.',
     img: logo3,
-    rating: 4,
-    name: 'Eugenia Moore',
-    position: 'CTO of Airbnb',
+    rating: 5,
+    name: 'Camille Durand',
+    position: 'Étudiante en commerce',
     avatar: avatar3,
   },
   {
-    desc: 'All the requirements for developers have been taken into consideration, so I\'m able to build any beautiful interface I want.',
+    desc: 'Bourgeon a transformé ma façon d\'apprendre. Les cours sont interactifs et j\'ai pu développer des projets concrets.',
     img: logo4,
-    rating: 4,
-    name: 'Sara Smith',
-    position: 'Founder of Continental',
+    rating: 5,
+    name: 'Alexandre Petit',
+    position: 'Étudiant en physique',
     avatar: avatar4,
   },
   {
-    desc: 'This template is really clean & well documented. The docs are really easy to understand and it\'s always easy to find a screenshot from their website.',
+    desc: 'La communauté Bourgeon est incroyable. J\'ai trouvé de l\'aide à chaque fois que j\'en avais besoin et j\'ai progressé rapidement.',
     img: logo2,
     rating: 5,
-    name: 'Curtis Fletcher',
-    position: 'Design Lead at Dribbble',
+    name: 'Julie Laurent',
+    position: 'Étudiante en biologie',
     avatar: avatar5,
   },
 ]
@@ -149,15 +149,15 @@ const slide = (dir: string) => {
                 class="mb-4"
                 size="small"
               >
-                Real Customers Reviews
+                Témoignages d'Étudiants
               </VChip>
               <div class="position-relative mb-1 me-2">
                 <div class="section-title">
-                  What people say
+                  Ce que disent nos étudiants
                 </div>
               </div>
               <p class="text-body-1 mb-12">
-                See what our customers have to say about their experience.
+                Découvrez ce que nos étudiants pensent de leur expérience avec Bourgeon.
               </p>
               <div class="position-relative">
                 <IconBtn

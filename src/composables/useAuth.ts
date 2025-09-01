@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from './useNotification'
+import { API_CONFIG, ENDPOINTS } from '@/config/api'
 
 // Types
 interface User {
@@ -64,12 +65,9 @@ export const useAuth = () => {
   const router = useRouter()
   const { success, error } = useNotification()
 
-  // Configuration API
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
-
   // Fonction utilitaire pour les appels API
   const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-    const url = `${API_BASE_URL}/auth${endpoint}`
+    const url = `${API_CONFIG.BASE_URL}${endpoint}`
     
     const defaultOptions: RequestInit = {
       headers: {
@@ -93,7 +91,7 @@ export const useAuth = () => {
     try {
       isLoading.value = true
       
-      const response = await apiCall<LoginResponse>('/login', {
+      const response = await apiCall<LoginResponse>(ENDPOINTS.AUTH.LOGIN, {
         method: 'POST',
         body: JSON.stringify({ phonenumber, password }),
       })
@@ -128,16 +126,52 @@ export const useAuth = () => {
   const checkAuth = async () => {
     if (accessTokenCookie.value) {
       try {
-        // Ici vous pouvez ajouter un appel API pour vérifier le token
-        // et récupérer les informations utilisateur
-        // Pour l'instant, on suppose que le token est valide
+        // Appel API pour vérifier le token et récupérer les infos utilisateur
+        const response = await apiCall<{ user: User }>(ENDPOINTS.AUTH.ME, {
+          headers: {
+            'Authorization': `Bearer ${accessTokenCookie.value}`
+          }
+        })
+        
+        user.value = response.user
         return true
       } catch (err) {
-        logout()
-        return false
+        // Si le token est invalide, essayer avec le refresh token
+        if (refreshTokenCookie.value) {
+          try {
+            const refreshResponse = await apiCall<LoginResponse>(ENDPOINTS.AUTH.REFRESH, {
+              method: 'POST',
+              body: JSON.stringify({ refreshToken: refreshTokenCookie.value }),
+            })
+            
+            accessTokenCookie.value = refreshResponse.accessToken
+            refreshTokenCookie.value = refreshResponse.refreshToken
+            
+            // Récupérer les infos utilisateur avec le nouveau token
+            const userResponse = await apiCall<{ user: User }>(ENDPOINTS.AUTH.ME, {
+              headers: {
+                'Authorization': `Bearer ${accessTokenCookie.value}`
+              }
+            })
+            
+            user.value = userResponse.user
+            return true
+          } catch (refreshErr) {
+            logout()
+            return false
+          }
+        } else {
+          logout()
+          return false
+        }
       }
     }
     return false
+  }
+
+  // Initialiser l'utilisateur au démarrage
+  const initAuth = async () => {
+    await checkAuth()
   }
 
   return {
@@ -147,5 +181,8 @@ export const useAuth = () => {
     login,
     logout,
     checkAuth,
+    initAuth,
   }
 }
+
+
