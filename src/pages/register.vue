@@ -1,18 +1,8 @@
 <script setup lang="ts">
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import type { CustomInputContent } from '@core/types'
+import { useRegister } from '@/composables/useRegister'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
-import { useRegister } from '@/composables/useRegister'
 import { onMounted } from 'vue'
-
-import registerMultiStepIllustrationDark from '@images/illustrations/register-multi-step-illustration-dark.png'
-import registerMultiStepIllustrationLight from '@images/illustrations/register-multi-step-illustration-light.png'
-
-import registerMultiStepBgDark from '@images/pages/register-multi-step-bg-dark.png'
-import registerMultiStepBgLight from '@images/pages/register-multi-step-bg-light.png'
-
-const registerMultiStepBg = useGenerateImageVariant(registerMultiStepBgLight, registerMultiStepBgDark)
 
 definePage({
   meta: {
@@ -51,7 +41,7 @@ const step3Form = ref({
   firstname: '',
   lastname: '',
   password: '',
-  verifyPassword: '',
+  confirmPassword: '',
 })
 
 // Validation rules
@@ -75,9 +65,9 @@ const isStep3Valid = computed(() => {
   return step3Form.value.firstname &&
          step3Form.value.lastname &&
          step3Form.value.password &&
-         step3Form.value.verifyPassword &&
+         step3Form.value.confirmPassword &&
          rules.minLength(step3Form.value.password) === true &&
-         rules.passwordMatch(step3Form.value.verifyPassword) === true
+         rules.passwordMatch(step3Form.value.confirmPassword) === true
 })
 
 // Handle step 1: Request OTP
@@ -105,7 +95,7 @@ const handleRegister = async () => {
       firstname: step3Form.value.firstname,
       lastname: step3Form.value.lastname,
       password: step3Form.value.password,
-      verifyPassword: step3Form.value.verifyPassword,
+      confirmPassword: step3Form.value.confirmPassword,
     })
   } catch (error) {
     console.error('Erreur lors de l\'inscription:', error)
@@ -121,7 +111,6 @@ const handleResendOtp = async () => {
   }
 }
 
-const registerMultiStepIllustration = useGenerateImageVariant(registerMultiStepIllustrationLight, registerMultiStepIllustrationDark)
 
 const items = [
   {
@@ -164,28 +153,7 @@ onMounted(() => {
     class="auth-wrapper"
   >
     <VCol
-      md="4"
-      class="d-none d-md-flex"
-    >
-      <!-- here your illustration -->
-      <div class="d-flex justify-center align-center w-100 position-relative">
-        <VImg
-          :src="registerMultiStepIllustration"
-          class="illustration-image flip-in-rtl"
-        />
-
-        <img
-          class="bg-image position-absolute w-100 flip-in-rtl"
-          :src="registerMultiStepBg"
-          alt="register-multi-step-bg"
-          height="340"
-        >
-      </div>
-    </VCol>
-
-    <VCol
       cols="12"
-      md="8"
       class="auth-card-v2 d-flex align-center justify-center pa-10"
       style="background-color: rgb(var(--v-theme-surface));"
     >
@@ -198,6 +166,7 @@ onMounted(() => {
           :items="items"
           :direction="$vuetify.display.smAndUp ? 'horizontal' : 'vertical'"
           icon-size="22"
+          :is-active-step-valid="false"
           class="stepper-icon-step-bg mb-12"
         />
 
@@ -304,7 +273,7 @@ onMounted(() => {
                   md="6"
                 >
                   <AppTextField
-                    v-model="step3Form.verifyPassword"
+                    v-model="step3Form.confirmPassword"
                     label="Confirmer le mot de passe"
                     placeholder="Confirmez votre mot de passe"
                     :type="isConfirmPasswordVisible ? 'text' : 'password'"
@@ -390,13 +359,4 @@ onMounted(() => {
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
-
-.illustration-image {
-  block-size: 550px;
-  inline-size: 248px;
-}
-
-.bg-image {
-  inset-block-end: 0;
-}
 </style>

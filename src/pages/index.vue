@@ -7,8 +7,6 @@ import CustomersReview from '@/views/front-pages/landing-page/customers-review.v
 import FaqSection from '@/views/front-pages/landing-page/faq-section.vue'
 import Features from '@/views/front-pages/landing-page/features.vue'
 import HeroSection from '@/views/front-pages/landing-page/hero-section.vue'
-import OurTeam from '@/views/front-pages/landing-page/our-team.vue'
-import PricingPlans from '@/views/front-pages/landing-page/pricing-plans.vue'
 import ProductStats from '@/views/front-pages/landing-page/product-stats.vue'
 import { useConfigStore } from '@core/stores/config'
 
@@ -28,12 +26,11 @@ const activeSectionId = ref()
 
 const refHome = ref()
 const refFeatures = ref()
-const refTeam = ref()
 const refContact = ref()
 const refFaq = ref()
 
 useIntersectionObserver(
-  [refHome, refFeatures, refTeam, refContact, refFaq],
+  [refHome, refFeatures, refContact, refFaq],
   ([{ isIntersecting, target }]) => {
     if (isIntersecting)
       activeSectionId.value = target.id
@@ -61,15 +58,6 @@ useIntersectionObserver(
       <CustomersReview />
     </div>
 
-    <!-- 👉 Our Team -->
-    <div :style="{ 'background-color': 'rgb(var(--v-theme-surface))' }">
-      <OurTeam ref="refTeam" />
-    </div>
-
-    <!-- 👉 Pricing Plans -->
-    <div :style="{ 'background-color': 'rgb(var(--v-theme-surface))' }">
-      <PricingPlans />
-    </div>
 
     <!-- 👉 Product stats -->
     <ProductStats />

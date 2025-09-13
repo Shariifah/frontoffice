@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { register } from 'swiper/element/bundle'
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
 import logo1dark from '@images/front-pages/branding/logo-1-dark.png'
 import logo1light from '@images/front-pages/branding/logo-1-light.png'
-import logo1 from '@images/front-pages/branding/logo-1.png'
 import logo2dark from '@images/front-pages/branding/logo-2-dark.png'
 import logo2light from '@images/front-pages/branding/logo-2-light.png'
-import logo2 from '@images/front-pages/branding/logo-2.png'
 import logo3dark from '@images/front-pages/branding/logo-3-dark.png'
 import logo3light from '@images/front-pages/branding/logo-3-light.png'
-import logo3 from '@images/front-pages/branding/logo-3.png'
 import logo4dark from '@images/front-pages/branding/logo-4-dark.png'
 import logo4light from '@images/front-pages/branding/logo-4-light.png'
-import logo4 from '@images/front-pages/branding/logo-4.png'
 import logo5dark from '@images/front-pages/branding/logo-5-dark.png'
 import logo5light from '@images/front-pages/branding/logo-5-light.png'
+import { register } from 'swiper/element/bundle'
 
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
@@ -34,7 +30,6 @@ const brandLogo5 = useGenerateImageVariant(logo5light, logo5dark)
 const reviewData = [
   {
     desc: 'Bourgeon a révolutionné ma façon d\'apprendre. La plateforme est intuitive et les cours sont vraiment adaptés à mes besoins.',
-    img: logo1,
     rating: 5,
     name: 'Marie Dupont',
     position: 'Étudiante en informatique',
@@ -42,7 +37,6 @@ const reviewData = [
   },
   {
     desc: 'La plateforme Bourgeon est exceptionnelle. L\'interface est claire et les exercices pratiques m\'ont permis de progresser rapidement.',
-    img: logo2,
     rating: 5,
     name: 'Thomas Martin',
     position: 'Étudiant en développement',
@@ -50,7 +44,6 @@ const reviewData = [
   },
   {
     desc: 'Grâce à Bourgeon, j\'ai pu améliorer mes compétences en programmation. Les cours sont bien structurés et le support est excellent.',
-    img: logo3,
     rating: 5,
     name: 'Sophie Bernard',
     position: 'Étudiante en ingénierie',
@@ -58,7 +51,6 @@ const reviewData = [
   },
   {
     desc: 'Tous les besoins des apprenants ont été pris en compte. Je peux maintenant maîtriser n\'importe quel sujet grâce à Bourgeon.',
-    img: logo4,
     rating: 5,
     name: 'Lucas Dubois',
     position: 'Étudiant en sciences',
@@ -66,7 +58,6 @@ const reviewData = [
   },
   {
     desc: 'Bourgeon est génial, et j\'apprécie particulièrement de savoir que si je suis bloqué sur quelque chose, il y a toujours une communauté bienveillante pour m\'aider.',
-    img: logo3,
     rating: 5,
     name: 'Antoine Leroy',
     position: 'Étudiant en médecine',
@@ -74,7 +65,6 @@ const reviewData = [
   },
   {
     desc: 'La qualité des cours sur Bourgeon est exceptionnelle. J\'ai pu apprendre à mon rythme et les projets pratiques m\'ont beaucoup aidé.',
-    img: logo1,
     rating: 5,
     name: 'Emma Rousseau',
     position: 'Étudiante en design',
@@ -82,7 +72,6 @@ const reviewData = [
   },
   {
     desc: 'Bourgeon m\'a permis de découvrir ma passion pour la programmation. L\'approche pédagogique est parfaite pour les débutants.',
-    img: logo2,
     rating: 5,
     name: 'Pierre Moreau',
     position: 'Étudiant en mathématiques',
@@ -90,7 +79,6 @@ const reviewData = [
   },
   {
     desc: 'Je recommande Bourgeon à tous les étudiants qui veulent se former en ligne. La plateforme est complète et les résultats sont au rendez-vous.',
-    img: logo3,
     rating: 5,
     name: 'Camille Durand',
     position: 'Étudiante en commerce',
@@ -98,7 +86,6 @@ const reviewData = [
   },
   {
     desc: 'Bourgeon a transformé ma façon d\'apprendre. Les cours sont interactifs et j\'ai pu développer des projets concrets.',
-    img: logo4,
     rating: 5,
     name: 'Alexandre Petit',
     position: 'Étudiant en physique',
@@ -106,7 +93,6 @@ const reviewData = [
   },
   {
     desc: 'La communauté Bourgeon est incroyable. J\'ai trouvé de l\'aide à chaque fois que j\'en avais besoin et j\'ai progressé rapidement.',
-    img: logo2,
     rating: 5,
     name: 'Julie Laurent',
     position: 'Étudiante en biologie',
@@ -114,15 +100,15 @@ const reviewData = [
   },
 ]
 
-const customerReviewSwiper = ref(null)
+const customerReviewSwiper = ref<any>(null)
 
 const slide = (dir: string) => {
   const swiper = customerReviewSwiper.value?.swiper
 
   if (dir === 'prev')
-    swiper.slidePrev()
-
-  swiper.slideNext()
+    swiper?.slidePrev()
+  else
+    swiper?.slideNext()
 }
 </script>
 
@@ -239,11 +225,7 @@ const slide = (dir: string) => {
                 >
                   <VCard class="d-flex h-100 align-stretch">
                     <VCardText class="pa-6 d-flex flex-column justify-space-between align-start">
-                      <img
-                        :src="data.img"
-                        style="block-size: 1.375rem;"
-                        class="mb-3"
-                      >
+                     
                       <p class="text-body-1">
                         {{ data.desc }}
                       </p>
@@ -281,38 +263,7 @@ const slide = (dir: string) => {
 
       <VDivider class="w-100 swiper-divider" />
 
-      <VContainer>
-        <!-- 👉 Brand-logo Swiper  -->
-        <div class="swiper-brands-carousel">
-          <swiper-container
-            slides-per-view="2"
-            :space-between="10"
-            events-prefix="swiper-"
-            :autoplay="{
-              delay: 3000,
-              disableOnInteraction: true,
-            }"
-            :breakpoints="{
-              992: {
-                slidesPerView: 5,
-              },
-              768: {
-                slidesPerView: 3,
-              },
-            }"
-          >
-            <swiper-slide
-              v-for="(img, index) in [brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5]"
-              :key="index"
-            >
-              <VImg
-                :src="img"
-                height="38"
-              />
-            </swiper-slide>
-          </swiper-container>
-        </div>
-      </VContainer>
+     
     </div>
   </div>
 </template>

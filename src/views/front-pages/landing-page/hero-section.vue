@@ -1,31 +1,8 @@
 <script setup lang="ts">
-import { useMouse } from '@vueuse/core'
-import { useTheme } from 'vuetify'
-import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import joinArrow from '@images/front-pages/icons/Join-community-arrow.png'
-import heroDashboardImgDark from '@images/front-pages/landing-page/hero-dashboard-dark.png'
-import heroDashboardImgLight from '@images/front-pages/landing-page/hero-dashboard-light.png'
-
-import heroElementsImgDark from '@images/front-pages/landing-page/hero-elements-dark.png'
-import heroElementsImgLight from '@images/front-pages/landing-page/hero-elements-light.png'
+import joinArrow from '@images/front-pages/icons/Join-community-arrow.png';
+import { useTheme } from 'vuetify';
 
 const theme = useTheme()
-
-const heroElementsImg = useGenerateImageVariant(heroElementsImgLight, heroElementsImgDark)
-const heroDashboardImg = useGenerateImageVariant(heroDashboardImgLight, heroDashboardImgDark)
-
-const { x, y } = useMouse({ touch: false })
-
-const translateMouse = computed(() => {
-  if (typeof window !== 'undefined') {
-    const rotateX = ref((window.innerHeight - (1 * y.value)) / 100)
-
-    return { transform: `perspective(1200px) rotateX(${rotateX.value < -40 ? -20 : rotateX.value}deg) rotateY(${(window.innerWidth - (2 * x.value)) / 100}deg) scale3d(1,1,1)` }
-  }
-
-  // Provide a default return value when `window` is undefined
-  return { transform: 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)' }
-})
 </script>
 
 <template>
@@ -67,38 +44,25 @@ const translateMouse = computed(() => {
               </VBtn>
             </div>
           </div>
+          <VContainer>
+      <div class="hero-content-section">
+        <div class="hero-text-content">
+          <div class="hero-highlight-box">
+            <h2 class="hero-subtitle mb-4">
+              <span class="gradient-text">Apprentissage Moderne</span>
+            </h2>
+            <p class="hero-description mb-6">
+              Découvrez une nouvelle façon d'apprendre avec notre plateforme innovante qui s'adapte à votre rythme et vos besoins. Développez vos compétences avec des cours personnalisés et un suivi de progression détaillé.
+            </p>
+          </div>
+        </div>
+      </div>
+    </VContainer>
         </VContainer>
       </div>
     </div>
 
-    <VContainer>
-      <div class="position-relative">
-        <div class="blank-section" />
-        <div class="hero-animation-img position-absolute">
-          <RouterLink
-            :to="{ url: '/' }"
-            target="_blank"
-          >
-            <div
-              class="hero-dashboard-img position-relative"
-              :style="translateMouse"
-            >
-              <img
-                :src="heroDashboardImg"
-                alt="Hero Dashboard"
-                class="animation-img"
-              >
-              <img
-                :src="heroElementsImg"
-                alt="hero elements"
-                class="hero-elements-img animation-img position-absolute"
-                style="transform: translateZ(1rem);"
-              >
-            </div>
-          </RouterLink>
-        </div>
-      </div>
-    </VContainer>
+    
   </div>
 </template>
 
@@ -299,5 +263,115 @@ section {
 .hero-btn-item {
   inset-block-start: 80%;
   inset-inline-start: 5%;
+}
+
+// Styles pour le nouveau contenu stylisé
+.hero-content-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.hero-text-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-highlight-box {
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.1) 0%, rgba(var(--v-theme-secondary), 0.1) 100%);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+  border: 1px solid rgba(var(--v-theme-primary), 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #28c76f 0%, #5a4aff 47.92%, #ff3739 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 2s ease-in-out infinite alternate;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  color: rgba(var(--v-theme-on-surface), 0.8);
+  line-height: 1.6;
+}
+
+.hero-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.feature-item {
+  background: rgb(var(--v-theme-surface));
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(var(--v-theme-outline), 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(var(--v-theme-primary), 0.3);
+}
+
+.feature-icon {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(var(--v-theme-primary), 0.1);
+  margin: 0 auto 1rem auto;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.feature-desc {
+  color: rgba(var(--v-theme-on-surface), 0.7);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .hero-subtitle {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: 1.1rem;
+  }
+  
+  .hero-features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .feature-item {
+    padding: 1.5rem 1rem;
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+  }
 }
 </style>

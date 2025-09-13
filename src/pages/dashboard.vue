@@ -16,6 +16,7 @@ const { subscriptions, activeSubscription, hasActiveSubscription, fetchUserSubsc
 
 // État local
 const isLoading = ref(false)
+const selectedPeriod = ref('month') // week, month, year
 
 // Charger les données au montage du composant
 onMounted(async () => {
@@ -34,40 +35,99 @@ onMounted(async () => {
   }
 })
 
+// Données simulées pour les performances (à remplacer par de vraies APIs)
+const performanceData = ref({
+  totalDownloads: 24,
+  averageScore: 78.5,
+  subjectsCompleted: 12,
+  timeSpent: 45, // heures
+  weeklyProgress: [65, 72, 68, 85, 78, 82, 90],
+  monthlyProgress: [70, 75, 80, 78, 85, 82, 88, 90, 85, 92, 88, 95],
+  subjectPerformance: [
+    { name: 'Mathématiques', score: 85, downloads: 8 },
+    { name: 'Physique-Chimie', score: 78, downloads: 6 },
+    { name: 'Français', score: 92, downloads: 5 },
+    { name: 'Histoire-Géo', score: 75, downloads: 3 },
+    { name: 'Anglais', score: 88, downloads: 4 }
+  ]
+})
+
 // KPI Computed
 const kpis = computed(() => ({
-  totalSubjects: subjects.value.length,
-  totalCourses: coursSubjects.value.length,
-  totalExams: examSubjects.value.length,
-  activeSubscription: hasActiveSubscription.value,
-  subscriptionType: activeSubscription.value?.type || 'Aucun',
-  daysUntilExpiry: activeSubscription.value 
-    ? Math.max(0, Math.ceil((new Date(activeSubscription.value.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
-    : 0,
-  totalSubscriptions: subscriptions.value.length,
-  completedSubscriptions: subscriptions.value.filter(sub => sub.paymentStatus === 'paid').length
+  totalDownloads: performanceData.value.totalDownloads,
+  averageScore: performanceData.value.averageScore,
+  subjectsCompleted: performanceData.value.subjectsCompleted,
+  timeSpent: performanceData.value.timeSpent,
+  improvement: 12.5, // % d'amélioration
+  rank: 'Top 15%', // Classement
+  streak: 7 // Jours consécutifs
 }))
 
 // Données pour les graphiques ApexCharts
-const chartData = computed(() => ({
-  subjectsByType: {
-    series: [kpis.value.totalCourses, kpis.value.totalExams],
-    labels: ['Cours', 'Examens']
-  },
-  subscriptionStatus: {
-    series: [kpis.value.activeSubscription ? 1 : 0, kpis.value.activeSubscription ? 0 : 1],
-    labels: ['Actif', 'Inactif']
+const chartData = computed(() => {
+  const progressData = selectedPeriod.value === 'week' 
+    ? performanceData.value.weeklyProgress 
+    : performanceData.value.monthlyProgress
+
+  return {
+    progressChart: {
+      series: [{
+        name: 'Score moyen',
+        data: progressData
+      }],
+      categories: selectedPeriod.value === 'week' 
+        ? ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+        : ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+    },
+    subjectChart: {
+      series: performanceData.value.subjectPerformance.map(s => s.score),
+      labels: performanceData.value.subjectPerformance.map(s => s.name)
+    },
+    downloadsChart: {
+      series: [{
+        name: 'Téléchargements',
+        data: performanceData.value.subjectPerformance.map(s => s.downloads)
+      }],
+      categories: performanceData.value.subjectPerformance.map(s => s.name)
+    }
   }
-}))
+})
 
 // Options pour les graphiques ApexCharts
-const chartOptions = {
+const lineChartOptions = {
   chart: {
-    type: 'donut',
-    height: 200
+    type: 'area',
+    height: 300,
+    toolbar: {
+      show: false
+    }
   },
-  colors: ['#4CAF50', '#2196F3'],
-  labels: ['Cours', 'Examens'],
+  colors: ['#4CAF50'],
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shadeIntensity: 1,
+      opacityFrom: 0.7,
+      opacityTo: 0.2,
+      stops: [0, 90, 100]
+    }
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 3
+  },
+  xaxis: {
+    categories: chartData.value.progressChart.categories
+  },
+  yaxis: {
+    min: 0,
+    max: 100,
+    labels: {
+      formatter: function(value: number) {
+        return value + '%'
+      }
+    }
+  },
   legend: {
     show: false
   },
@@ -75,7 +135,65 @@ const chartOptions = {
     breakpoint: 480,
     options: {
       chart: {
-        width: 200
+        height: 200
+      }
+    }
+  }]
+}
+
+const barChartOptions = {
+  chart: {
+    type: 'bar',
+    height: 300,
+    toolbar: {
+      show: false
+    }
+  },
+  colors: ['#2196F3'],
+  plotOptions: {
+    bar: {
+      borderRadius: 4,
+      horizontal: false,
+    }
+  },
+  xaxis: {
+    categories: chartData.value.downloadsChart.categories
+  },
+  yaxis: {
+    labels: {
+      formatter: function(value: number) {
+        return value
+      }
+    }
+  },
+  legend: {
+    show: false
+  },
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        height: 200
+      }
+    }
+  }]
+}
+
+const donutChartOptions = {
+  chart: {
+    type: 'donut',
+    height: 300
+  },
+  colors: ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#F44336'],
+  labels: chartData.value.subjectChart.labels,
+  legend: {
+    position: 'bottom'
+  },
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        height: 200
       },
       legend: {
         position: 'bottom'
@@ -84,59 +202,33 @@ const chartOptions = {
   }]
 }
 
-const subscriptionChartOptions = {
-  chart: {
-    type: 'donut',
-    height: 200
-  },
-  colors: ['#4CAF50', '#FF9800'],
-  labels: ['Actif', 'Inactif'],
-  legend: {
-    show: false
-  },
-  responsive: [{
-    breakpoint: 480,
-    options: {
-      chart: {
-        width: 200
-      },
-      legend: {
-        position: 'bottom'
-      }
-    }
-  }]
+// Fonction pour obtenir la couleur selon le score
+const getScoreColor = (score: number) => {
+  if (score >= 90) return 'success'
+  if (score >= 80) return 'primary'
+  if (score >= 70) return 'warning'
+  return 'error'
 }
 
-// Fonction pour obtenir l'icône selon le type
-const getSubjectIcon = (type: string) => {
-  return type === 'cours' ? 'tabler-book' : 'tabler-file-text'
-}
-
-// Fonction pour obtenir la couleur selon le type
-const getSubjectColor = (type: string) => {
-  return type === 'cours' ? 'success' : 'primary'
-}
-
-// Fonction pour formater la date
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+// Fonction pour obtenir l'icône selon le score
+const getScoreIcon = (score: number) => {
+  if (score >= 90) return 'tabler-trophy'
+  if (score >= 80) return 'tabler-star'
+  if (score >= 70) return 'tabler-trending-up'
+  return 'tabler-trending-down'
 }
 </script>
 
 <template>
-  <div class="dashboard-container">
+  <div class="performance-container">
     <VContainer>
       <!-- Header -->
       <div class="mb-6">
         <h1 class="text-h4 font-weight-bold mb-2">
-          Tableau de bord
+          Mes performances
         </h1>
         <p class="text-body-1 text-medium-emphasis">
-          Bienvenue {{ user?.firstname }}, voici un aperçu de votre activité
+          Suivez votre progression et vos résultats
         </p>
       </div>
 
@@ -152,197 +244,195 @@ const formatDate = (dateString: string) => {
       <div v-else class="kpi-grid mb-8">
         <div class="kpi-card">
           <div class="kpi-icon success">
-            <VIcon icon="tabler-book" size="24" />
+            <VIcon icon="tabler-download" size="24" />
           </div>
           <div class="kpi-content">
-            <h3 class="kpi-value">{{ kpis.totalSubjects }}</h3>
-            <p class="kpi-label">Total des sujets</p>
+            <h3 class="kpi-value">{{ kpis.totalDownloads }}</h3>
+            <p class="kpi-label">Téléchargements</p>
+            <div class="kpi-trend positive">
+              <VIcon icon="tabler-trending-up" size="16" />
+              <span>+15% ce mois</span>
+            </div>
           </div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-icon primary">
-            <VIcon icon="tabler-file-text" size="24" />
+            <VIcon icon="tabler-chart-line" size="24" />
           </div>
           <div class="kpi-content">
-            <h3 class="kpi-value">{{ kpis.totalCourses }}</h3>
-            <p class="kpi-label">Cours disponibles</p>
+            <h3 class="kpi-value">{{ kpis.averageScore }}%</h3>
+            <p class="kpi-label">Score moyen</p>
+            <div class="kpi-trend positive">
+              <VIcon icon="tabler-trending-up" size="16" />
+              <span>+{{ kpis.improvement }}%</span>
+            </div>
           </div>
         </div>
 
         <div class="kpi-card">
           <div class="kpi-icon warning">
-            <VIcon icon="tabler-clipboard-check" size="24" />
+            <VIcon icon="tabler-book-check" size="24" />
           </div>
           <div class="kpi-content">
-            <h3 class="kpi-value">{{ kpis.totalExams }}</h3>
-            <p class="kpi-label">Examens disponibles</p>
+            <h3 class="kpi-value">{{ kpis.subjectsCompleted }}</h3>
+            <p class="kpi-label">Sujets complétés</p>
+            <div class="kpi-trend positive">
+              <VIcon icon="tabler-trending-up" size="16" />
+              <span>+3 cette semaine</span>
+            </div>
           </div>
         </div>
 
         <div class="kpi-card">
-          <div class="kpi-icon" :class="kpis.activeSubscription ? 'success' : 'error'">
-            <VIcon icon="tabler-crown" size="24" />
+          <div class="kpi-icon info">
+            <VIcon icon="tabler-clock" size="24" />
           </div>
           <div class="kpi-content">
-            <h3 class="kpi-value">{{ kpis.subscriptionType.charAt(0).toUpperCase() + kpis.subscriptionType.slice(1) }}</h3>
-            <p class="kpi-label">Abonnement actuel</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Charts Section -->
-      <div class="charts-section mb-8">
-        <div class="charts-grid">
-          <div class="chart-card">
-            <h4 class="text-h6 mb-4">Répartition des sujets</h4>
-            <div class="chart-container">
-              <VueApexCharts
-                type="donut"
-                :options="chartOptions"
-                :series="chartData.subjectsByType.series"
-                height="200"
-              />
-            </div>
-            <div class="chart-legend">
-              <div class="legend-item">
-                <div class="legend-color success"></div>
-                <span>Cours ({{ kpis.totalCourses }})</span>
-              </div>
-              <div class="legend-item">
-                <div class="legend-color primary"></div>
-                <span>Examens ({{ kpis.totalExams }})</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chart-card">
-            <h4 class="text-h6 mb-4">Statut de l'abonnement</h4>
-            <div class="chart-container">
-              <VueApexCharts
-                type="donut"
-                :options="subscriptionChartOptions"
-                :series="chartData.subscriptionStatus.series"
-                height="200"
-              />
-            </div>
-            <div class="chart-legend">
-              <div class="legend-item">
-                <div class="legend-color" :class="kpis.activeSubscription ? 'success' : 'warning'"></div>
-                <span>{{ kpis.activeSubscription ? 'Actif' : 'Inactif' }}</span>
-              </div>
+            <h3 class="kpi-value">{{ kpis.timeSpent }}h</h3>
+            <p class="kpi-label">Temps d'étude</p>
+            <div class="kpi-trend positive">
+              <VIcon icon="tabler-trending-up" size="16" />
+              <span>+5h ce mois</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Subscription Status -->
-      <div v-if="hasActiveSubscription && activeSubscription" class="subscription-status-card mb-8">
-        <div class="status-header">
-          <h4 class="text-h6">Statut de votre abonnement</h4>
-          <VChip
-            :color="kpis.daysUntilExpiry > 7 ? 'success' : kpis.daysUntilExpiry > 0 ? 'warning' : 'error'"
-            size="small"
-          >
-            {{ kpis.daysUntilExpiry > 0 ? `${kpis.daysUntilExpiry} jours restants` : 'Expiré' }}
-          </VChip>
+      <!-- Progress Chart -->
+      <div class="chart-section mb-8">
+        <div class="chart-header">
+          <h4 class="text-h6">Évolution des scores</h4>
+          <div class="chart-controls">
+            <VBtnToggle
+              v-model="selectedPeriod"
+              mandatory
+              size="small"
+            >
+              <VBtn value="week">Semaine</VBtn>
+              <VBtn value="month">Mois</VBtn>
+            </VBtnToggle>
+          </div>
         </div>
-        <div class="status-details">
-          <div class="status-item">
-            <span class="label">Type:</span>
-            <span class="value">{{ activeSubscription.type.charAt(0).toUpperCase() + activeSubscription.type.slice(1) }}</span>
-          </div>
-          <div class="status-item">
-            <span class="label">Prix:</span>
-            <span class="value">{{ activeSubscription.price.toLocaleString('fr-FR') }} FCFA</span>
-          </div>
-          <div class="status-item">
-            <span class="label">Expire le:</span>
-            <span class="value">{{ formatDate(activeSubscription.endDate) }}</span>
-          </div>
+        <div class="chart-card">
+          <VueApexCharts
+            type="area"
+            :options="lineChartOptions"
+            :series="chartData.progressChart.series"
+            height="300"
+          />
         </div>
       </div>
 
-      <!-- Recent Subjects -->
-      <div class="recent-subjects mb-8">
-        <h4 class="text-h6 mb-4">Sujets récents</h4>
-        <div class="subjects-list">
+      <!-- Performance by Subject -->
+      <div class="performance-grid mb-8">
+        <div class="chart-card">
+          <h4 class="text-h6 mb-4">Performance par matière</h4>
+          <VueApexCharts
+            type="donut"
+            :options="donutChartOptions"
+            :series="chartData.subjectChart.series"
+            height="300"
+          />
+        </div>
+
+        <div class="chart-card">
+          <h4 class="text-h6 mb-4">Téléchargements par matière</h4>
+          <VueApexCharts
+            type="bar"
+            :options="barChartOptions"
+            :series="chartData.downloadsChart.series"
+            height="300"
+          />
+        </div>
+      </div>
+
+      <!-- Subject Performance Details -->
+      <div class="subjects-performance mb-8">
+        <h4 class="text-h6 mb-4">Détails par matière</h4>
+        <div class="subjects-grid">
           <div
-            v-for="subject in subjects.slice(0, 5)"
-            :key="subject._id"
-            class="subject-item"
+            v-for="subject in performanceData.subjectPerformance"
+            :key="subject.name"
+            class="subject-performance-card"
           >
-            <div class="subject-info">
+            <div class="subject-header">
+              <h5 class="text-h6">{{ subject.name }}</h5>
               <VChip
-                :color="getSubjectColor(subject.type)"
+                :color="getScoreColor(subject.score)"
                 size="small"
-                class="me-3"
               >
                 <VIcon
-                  :icon="getSubjectIcon(subject.type)"
+                  :icon="getScoreIcon(subject.score)"
                   size="16"
                   class="me-1"
                 />
-                {{ subject.type === 'cours' ? 'Cours' : 'Examen' }}
+                {{ subject.score }}%
               </VChip>
-              <span class="subject-title">{{ subject.title }}</span>
             </div>
-            <span class="subject-date">{{ formatDate(subject.createdAt) }}</span>
+            <div class="subject-stats">
+              <div class="stat-item">
+                <span class="label">Téléchargements</span>
+                <span class="value">{{ subject.downloads }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Temps moyen</span>
+                <span class="value">{{ Math.round(subject.score / 10) }}h</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div 
+                class="progress-fill"
+                :style="{ width: subject.score + '%', backgroundColor: getScoreColor(subject.score) === 'success' ? '#4CAF50' : getScoreColor(subject.score) === 'primary' ? '#2196F3' : getScoreColor(subject.score) === 'warning' ? '#FF9800' : '#F44336' }"
+              ></div>
+            </div>
           </div>
         </div>
-        <VBtn
-          variant="text"
-          color="primary"
-          to="/subjects"
-          class="mt-3"
-        >
-          Voir tous les sujets
-        </VBtn>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h4 class="text-h6 mb-4">Actions rapides</h4>
-        <div class="actions-grid">
-          <VBtn
-            color="primary"
-            variant="outlined"
-            to="/subjects"
-            class="action-btn"
-          >
-            <VIcon icon="tabler-book" class="me-2" />
-            Consulter les sujets
-          </VBtn>
-          
-          <VBtn
-            color="success"
-            variant="outlined"
-            to="/subscription"
-            class="action-btn"
-          >
-            <VIcon icon="tabler-crown" class="me-2" />
-            Gérer l'abonnement
-          </VBtn>
-          
-          <VBtn
-            color="info"
-            variant="outlined"
-            to="/profile"
-            class="action-btn"
-          >
-            <VIcon icon="tabler-user" class="me-2" />
-            Mon profil
-          </VBtn>
-          
-          <VBtn
-            color="warning"
-            variant="outlined"
-            to="/support"
-            class="action-btn"
-          >
-            <VIcon icon="tabler-help" class="me-2" />
-            Support
-          </VBtn>
+      <!-- Achievements -->
+      <div class="achievements-section">
+        <h4 class="text-h6 mb-4">Réalisations</h4>
+        <div class="achievements-grid">
+          <div class="achievement-card">
+            <div class="achievement-icon success">
+              <VIcon icon="tabler-trophy" size="32" />
+            </div>
+            <div class="achievement-content">
+              <h5 class="text-h6">Excellent étudiant</h5>
+              <p class="text-body-2">Score moyen supérieur à 85%</p>
+            </div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon primary">
+              <VIcon icon="tabler-flame" size="32" />
+            </div>
+            <div class="achievement-content">
+              <h5 class="text-h6">Série consécutive</h5>
+              <p class="text-body-2">{{ kpis.streak }} jours d'étude consécutifs</p>
+            </div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon warning">
+              <VIcon icon="tabler-target" size="32" />
+            </div>
+            <div class="achievement-content">
+              <h5 class="text-h6">Objectif atteint</h5>
+              <p class="text-body-2">{{ kpis.subjectsCompleted }} sujets complétés</p>
+            </div>
+          </div>
+
+          <div class="achievement-card">
+            <div class="achievement-icon info">
+              <VIcon icon="tabler-medal" size="32" />
+            </div>
+            <div class="achievement-content">
+              <h5 class="text-h6">Classement</h5>
+              <p class="text-body-2">{{ kpis.rank }} des utilisateurs</p>
+            </div>
+          </div>
         </div>
       </div>
     </VContainer>
@@ -350,7 +440,7 @@ const formatDate = (dateString: string) => {
 </template>
 
 <style scoped>
-.dashboard-container {
+.performance-container {
   padding: 2rem 0;
 }
 
@@ -398,8 +488,8 @@ const formatDate = (dateString: string) => {
   background: linear-gradient(135deg, #FF9800, #F57C00);
 }
 
-.kpi-icon.error {
-  background: linear-gradient(135deg, #F44336, #D32F2F);
+.kpi-icon.info {
+  background: linear-gradient(135deg, #00BCD4, #0097A7);
 }
 
 .kpi-content {
@@ -419,14 +509,31 @@ const formatDate = (dateString: string) => {
   margin: 0.5rem 0 0 0;
 }
 
-.charts-section {
+.kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.kpi-trend.positive {
+  color: #4CAF50;
+}
+
+.kpi-trend.negative {
+  color: #F44336;
+}
+
+.chart-section {
   margin-top: 2rem;
 }
 
-.charts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .chart-card {
@@ -436,131 +543,142 @@ const formatDate = (dateString: string) => {
   background: rgb(var(--v-theme-surface));
 }
 
-.chart-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
 }
 
-.chart-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.subjects-performance {
+  margin-top: 2rem;
 }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.legend-color.success {
-  background: #4CAF50;
-}
-
-.legend-color.primary {
-  background: #2196F3;
-}
-
-.legend-color.warning {
-  background: #FF9800;
-}
-
-.subscription-status-card {
+.subject-performance-card {
   padding: 1.5rem;
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.05) 0%, rgba(var(--v-theme-primary), 0.02) 100%);
-  border-color: rgb(var(--v-theme-primary));
+  background: rgb(var(--v-theme-surface));
+  transition: all 0.2s ease-in-out;
 }
 
-.status-header {
+.subject-performance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.subject-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.status-details {
+.subject-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.status-item {
+.stat-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .label {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
 .value {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-.recent-subjects {
-  padding: 1.5rem;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: 12px;
-  background: rgb(var(--v-theme-surface));
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(var(--v-border-color), var(--v-border-opacity));
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.subjects-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
-.subject-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: 8px;
-  background: rgba(var(--v-theme-surface), 0.5);
+.achievements-section {
+  margin-top: 2rem;
 }
 
-.subject-info {
-  display: flex;
-  align-items: center;
-}
-
-.subject-title {
-  font-weight: 500;
-}
-
-.subject-date {
-  font-size: 0.875rem;
-  color: rgba(var(--v-theme-on-surface), 0.7);
-}
-
-.quick-actions {
-  padding: 1.5rem;
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: 12px;
-  background: rgb(var(--v-theme-surface));
-}
-
-.actions-grid {
+.achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
-.action-btn {
-  height: 48px;
+.achievement-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-radius: 12px;
+  background: rgb(var(--v-theme-surface));
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.achievement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.achievement-icon.success {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.achievement-icon.primary {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.achievement-icon.warning {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+.achievement-icon.info {
+  background: linear-gradient(135deg, #00BCD4, #0097A7);
+}
+
+.achievement-content {
+  flex: 1;
+}
+
+.achievement-content h5 {
+  margin: 0 0 0.5rem 0;
+}
+
+.achievement-content p {
+  margin: 0;
+  color: rgba(var(--v-theme-on-surface), 0.7);
 }
 
 @media (max-width: 768px) {
@@ -568,22 +686,26 @@ const formatDate = (dateString: string) => {
     grid-template-columns: 1fr;
   }
   
-  .charts-grid {
+  .performance-grid {
     grid-template-columns: 1fr;
   }
   
-  .status-details {
+  .subjects-grid {
     grid-template-columns: 1fr;
   }
   
-  .actions-grid {
+  .achievements-grid {
     grid-template-columns: 1fr;
   }
   
-  .subject-item {
+  .chart-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .subject-stats {
+    grid-template-columns: 1fr;
   }
 }
 </style>

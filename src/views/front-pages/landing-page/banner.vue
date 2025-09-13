@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ctaDashborad from '@images/front-pages/landing-page/cta-dashboard.png'
+import ctaDashborad from '@images/logo.png';
 </script>
 
 <template>
@@ -52,11 +52,5 @@ import ctaDashborad from '@images/front-pages/landing-page/cta-dashboard.png'
   line-height: 44px;
 }
 
-.banner-bg-light {
-  background-image: url("@images/front-pages/backgrounds/cta-bg.png");
-}
 
-.banner-bg-dark {
-  background-image: url("@images/front-pages/backgrounds/cta-bg-dark.png");
-}
 </style>

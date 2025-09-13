@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import boyWithLogo from '@images/front-pages/landing-page/faq-boy-with-logos.png'
+import boyWithLogo from '@images/logo.png';
 
 const faqData = [
   {

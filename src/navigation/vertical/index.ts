@@ -15,19 +15,9 @@ export default [
     icon: { icon: 'tabler-pencil' },
   },
   {
-    title: 'Mes performances',
-    to: { path: '/performance' },
-    icon: { icon: 'tabler-chart-line' },
-  },
-  {
     title: 'Mon abonnement',
     to: { path: '/subscription' },
     icon: { icon: 'tabler-crown' },
-  },
-  {
-    title: 'Tarifs',
-    to: { path: '/pricing' },
-    icon: { icon: 'tabler-currency-franc' },
   },
   {
     title: 'Support',
